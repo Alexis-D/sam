@@ -102,7 +102,7 @@ class LexisNexisCrawler
   end
 
   def close
-    @browser.close if not @browser.closed
+    @browser.close
   end
 end
 
