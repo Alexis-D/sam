@@ -1,26 +1,24 @@
 #!/usr/bin/env ruby
 
+require 'date'
 require 'watir-webdriver'
-
-# TODO
-# restrict to some newspaper
-# wait until download finished (why not look at the total size of download_dir
-# if not possible otherwise...)
 
 class LexisNexisCrawler
   # crawl all the article in Economic News which contain the word 'France'
+  attr_accessor :search  # search terms, array of one or two keywords
+                         # default to %w(France economie)
+  attr_accessor :source  # e.g. (default):"French Language News"
+  attr_accessor :indexes # indexes of the checkbox to check, default to [0]
 
-  def initialize(browser=:chrome, search=['France', 'economie'],
-                 sources='French Language News', download_dir='downloads')
-    # search: at least one keyword, max 2
-    # to download the data where we want
+  def initialize(browser=:chrome, download_dir='downloads')
     profile = Selenium::WebDriver::Chrome::Profile.new
     profile['download.prompt_for_download'] = false
     profile['download.default_directory'] = download_dir
 
     @browser = Watir::Browser.new browser, :profile => profile
-    @search = search
-    @sources = sources
+    @search = %w(France economie)
+    @source = 'French Language News'
+    @indexes = [0]
   end
 
   def login(url, user='', pass='')
@@ -43,19 +41,45 @@ class LexisNexisCrawler
 
     # accept term & conditions
     @browser.link(:href => /submitterms\.do/).click
+
+    # get the search link
+    @searchUrl = @browser.link(:text => 'Search').href
   end
 
-  def crawl_one_day(day, month, year)
+  def crawl(from, to)
+    # crawl all the article from from to to (Date objects)
+    until from > to
+      begin
+        crawl_one_day from
+      rescue Exception => e
+        if @browser.text.include? 'No Documents Found'
+          STDERR.puts "[INFO] #{from.to_s} - No document found."
+        else
+          STDERR.puts "[ERROR] #{from.to_s} - Something unexpected happened while crawling."
+          STDERR.puts "                       #{e.message}"
+          STDERR.puts e.backtrace.inspect
+        end
+      end
+      from = from.next_day
+    end
+  end
+
+  def crawl_one_day(date)
     # search
-    @browser.link(:text => 'Search').click
+    @browser.goto @searchUrl
     @browser.text_field(:id => 'simpleSearchStyle').set(@search.first)
     @browser.text_field(:name => 'searchTerms2').set(@search.last)
-    @browser.select_list(:id => 'sourceDropDown').select(@sources)
+    @browser.select_list(:id => 'sourceDropDown').select(@source)
+
+    # select newspapers/websites
+    @indexes.each do |idx|
+      @browser.div(:id => 'hiddenDivsourceList').checkbox(:index => idx).set
+    end
 
     @browser.select_list(:id => 'specifyDateDefaultStyle').select(/Date is/)
-    @browser.text_field(:name => 'day1').set(day)
-    @browser.select_list(:name => 'month1').select(month)
-    @browser.text_field(:name => 'year1').set(year)
+    @browser.text_field(:name => 'day1').set(date.day)
+    @browser.select_list(:name => 'month1').select(date.strftime('%b'))
+    @browser.text_field(:name => 'year1').set(date.year)
 
     @browser.image(:id => 'enableSearchImg').click
 
@@ -75,12 +99,24 @@ class LexisNexisCrawler
 
     @browser.window(:title => /download/i).close
     @browser.goto url
-    @browser.back
+  end
+
+  def close
+    @browser.close if not @browser.closed
   end
 end
 
+### let the magic happen ###
+
 url = 'https://elib.tcd.ie/login?qurl=http://www.lexisnexis.com/uk/nexis'
 crawler = LexisNexisCrawler.new
+crawler.indexes = [10, 17, 39, 59, 60, 86, 102, 144, 157, 186, 190]
+# afp, agefi quotidien, boursier.com, les echos,
+# lesechos.fr, le figaro économie, investir.fr,
+# le parisien économie, radiobfm.com,
+# la tribune, latribune.fr
 crawler.login url
-crawler.crawl_one_day 20, 'Nov', 2010
+#crawler.crawl Date.new(2000, 1, 1), Date.new(2011, 11, 30)
+crawler.crawl Date.new(1999, 12, 30), Date.new(2000, 1, 2)
+crawler.close
 
