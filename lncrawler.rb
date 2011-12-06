@@ -70,21 +70,22 @@ class LexisNexisCrawler
         crawl_one_day date
       rescue Exception => e
         if @browser.text.include? 'No Documents Found'
-          STDERR.puts "[INFO] #{from.to_s} - No document found."
+          STDERR.puts "[INFO] #{date.to_s} - No document found."
         else
-          STDERR.puts "[ERROR] #{from.to_s} - Something unexpected happened while crawling."
+          STDERR.puts "[ERROR] #{date.to_s} - Something unexpected happened while crawling."
           STDERR.puts "                       #{e.message}"
           STDERR.puts e.backtrace.inspect
         end
       end
       date = date.next_day
     end
+  end
 
   def crawl_one_day(date)
+    STDERR.puts "[INFO] #{date.to_s} - Crawling."
     # search
     @browser.goto @searchUrl
     @browser.text_field(:id => 'simpleSearchStyle').set(@search.first)
-    @browser.select_list(:id => 'simpleSrchSel').select(/or/i)
     @browser.text_field(:name => 'searchTerms2').set(@search.last)
     @browser.select_list(:id => 'sourceDropDown').select(@source)
 
