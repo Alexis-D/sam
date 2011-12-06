@@ -64,6 +64,22 @@ class LexisNexisCrawler
     end
   end
 
+  def crawl_one_week(date)
+    7.times do
+      begin
+        crawl_one_day date
+      rescue Exception => e
+        if @browser.text.include? 'No Documents Found'
+          STDERR.puts "[INFO] #{from.to_s} - No document found."
+        else
+          STDERR.puts "[ERROR] #{from.to_s} - Something unexpected happened while crawling."
+          STDERR.puts "                       #{e.message}"
+          STDERR.puts e.backtrace.inspect
+        end
+      end
+      date = date.next_day
+    end
+
   def crawl_one_day(date)
     # search
     @browser.goto @searchUrl
@@ -116,7 +132,7 @@ crawler.indexes = [10, 17, 39, 59, 60, 86, 102, 144, 157, 186, 190]
 # le parisien économie, radiobfm.com,
 # la tribune, latribune.fr
 crawler.login url
-#crawler.crawl Date.new(2000, 1, 1), Date.new(2011, 11, 30)
-crawler.crawl Date.new(1999, 12, 30), Date.new(2000, 1, 2)
+#crawler.crawl Date.new(1999, 12, 30), Date.new(2000, 1, 2)
+crawler.crawl_one_week Date.new(2005, 01, 01)
 crawler.close
 
