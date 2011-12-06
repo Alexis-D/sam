@@ -84,6 +84,7 @@ class LexisNexisCrawler
     # search
     @browser.goto @searchUrl
     @browser.text_field(:id => 'simpleSearchStyle').set(@search.first)
+    @browser.select_list(:id => 'simpleSrchSel').select(/or/i)
     @browser.text_field(:name => 'searchTerms2').set(@search.last)
     @browser.select_list(:id => 'sourceDropDown').select(@source)
 
