@@ -33,11 +33,11 @@ class Trie:
 
         c, w = word[0], word[1:]
 
-        if '*' in self.childs:
-            return True
-
-        elif c in self.childs:
+        if c in self.childs:
             return w in self.childs[c]
+
+        elif '*' in self.childs:
+            return True
 
         return False
 
