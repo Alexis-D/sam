@@ -1,0 +1,3 @@
+# rm diacritic symbols, and lower
+''.join(x for x in unicode.normalize('NFD', 'çéléphant') if unicode.category(x) != 'Mn').lower()
+
