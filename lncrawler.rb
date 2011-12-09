@@ -64,8 +64,8 @@ class LexisNexisCrawler
     end
   end
 
-  def crawl_one_week(date)
-    7.times do
+  def crawl_days(days, date)
+    days.times do
       begin
         crawl_one_day date
       rescue Exception => e
@@ -79,6 +79,8 @@ class LexisNexisCrawler
       end
       date = date.next_day
     end
+
+    STDERR.puts "[INFO] #{date.to_s} - Next day."
   end
 
   def crawl_one_day(date)
@@ -86,6 +88,7 @@ class LexisNexisCrawler
     # search
     @browser.goto @searchUrl
     @browser.text_field(:id => 'simpleSearchStyle').set(@search.first)
+    @browser.select_list(:name => 'searchTermsConn1').select(/or/i)
     @browser.text_field(:name => 'searchTerms2').set(@search.last)
     @browser.select_list(:id => 'sourceDropDown').select(@source)
 
@@ -102,12 +105,18 @@ class LexisNexisCrawler
     @browser.image(:id => 'enableSearchImg').click
 
     # find & click download link
+    sleep 1 # sometimes pbs with the frame...
     @browser.frame(:title => 'Results Navigation Frame').link(:href => /delivery_DnldRender/).click
 
     # download options
     url = ''
     @browser.window(:title => /download/i).use do
       @browser.select_list(:name => 'delFmt').select('Text')
+
+      if @browser.text.scan(/All Documents \(.*?\)/i).first.scan(/\(\d+\s*-\s*\d+\)/).first.scan(/\d+/).last.to_i > 500
+        @browser.text_field(:name => 'selDocs').set('1-500')
+        STDERR.puts "[WARNING] #{date.to_s} - More than 500 documents."
+      end
       @browser.link(:href => /delivery_DnldForm/).click
 
       sleep 1 until @browser.text.include? '.TXT'
@@ -128,13 +137,14 @@ end
 
 url = 'https://elib.tcd.ie/login?qurl=http://www.lexisnexis.com/uk/nexis'
 crawler = LexisNexisCrawler.new
-crawler.indexes = [10, 17, 39, 59, 60, 86, 102, 144, 157, 186, 190]
-# afp, agefi quotidien, boursier.com, les echos,
+crawler.indexes = [17, 39, 59, 60, 86, 102, 144, 186, 190]
+# agefi quotidien, boursier.com, les echos,
 # lesechos.fr, le figaro économie, investir.fr,
-# le parisien économie, radiobfm.com,
+# le parisien économie,
 # la tribune, latribune.fr
 crawler.login url
 #crawler.crawl Date.new(1999, 12, 30), Date.new(2000, 1, 2)
-crawler.crawl_one_week Date.new(2005, 01, 01)
+crawler.crawl_days 15, Date.new(2006, 02, 18)
+sleep 10
 crawler.close
 
