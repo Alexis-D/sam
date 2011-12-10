@@ -144,7 +144,7 @@ crawler.indexes = [17, 39, 59, 60, 86, 102, 144, 186, 190]
 # la tribune, latribune.fr
 crawler.login url
 #crawler.crawl Date.new(1999, 12, 30), Date.new(2000, 1, 2)
-crawler.crawl_days 15, Date.new(2006, 02, 18)
+crawler.crawl_days 15, Date.new(2006, 4, 5)
 sleep 10
 crawler.close
 
