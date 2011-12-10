@@ -1,3 +1,8 @@
 # rm diacritic symbols, and lower
 ''.join(x for x in unicode.normalize('NFD', 'çéléphant') if unicode.category(x) != 'Mn').lower()
 
+rm words like "interest" because that's a useful word in economy which carry no sentiment (increase/decrease interest rates e.g.)
+
+rm words like "record", "spectaculaire", "extraordinaire" may be positive in general, but may be negative (especially during crisis)
+
+add sombre, plonger...
