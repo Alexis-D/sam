@@ -2,4 +2,5 @@ chromedriver.log
 download*
 out.mkv
 data/lexicon_orig.dat
+*.pyc
 __pycache__
