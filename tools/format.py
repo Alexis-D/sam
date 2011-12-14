@@ -18,9 +18,9 @@ if __name__ == '__main__':
     copy = re.compile(r'copyright', re.I)
 
     # for each filename
-    for f in sys.argv[1:]:
+    for i, f in enumerate(sys.argv[1:]):
         out = ''
-        print(f)
+        print('%4d/%4d' % (i + 1, len(sys.argv) - 1))
         with open(f) as f:
             for l in f:
                 # empty line
@@ -48,14 +48,24 @@ if __name__ == '__main__':
 
                         # time module & locale doesn't seemed to want to work
                         # properly so quick hack
-                        month = 1 + ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet',
-                                    'août', 'septembre', 'octobre', 'novembre', 'décembre'].index(month)
+                        french_months = ['janvier', 'février', 'mars', 'avril',
+                                         'mai', 'juin', 'juillet', 'août',
+                                         'septembre', 'octobre', 'novembre',
+                                         'décembre']
+                        month = 1 + french_months.index(month)
                     except:
                         # english date format
-                        t = time.strptime(l.strip(), '%B %d, %Y')
-                        day = t.tm_mday
-                        month = t.tm_mon
-                        year = t.tm_year
+                        try:
+                            t = time.strptime(l.strip(), '%B %d, %Y')
+                            day = t.tm_mday
+                            month = t.tm_mon
+                            year = t.tm_year
+                        except:
+                            # Lundi 12 Juin 2006 12:20 PM CEST
+                            _, day, month, year, *_ = l.strip().lower().split()
+                            day = int(day)
+                            year = int(year)
+                            month = 1 + french_months.index(month)
 
                     out += '%d/%d/%d\n' % (day, month, year)
                     out += '%s\n' % src
