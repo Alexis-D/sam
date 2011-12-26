@@ -20,7 +20,11 @@ if __name__ == '__main__':
     # for each filename
     for i, f in enumerate(sys.argv[1:]):
         out = ''
-        print('%4d/%4d' % (i + 1, len(sys.argv) - 1))
+        print('%4d/%4d' % (i + 1, len(sys.argv) - 1), end='')
+        print('\b' * 9, end='')
+        # if not flushed, won't be printed until '\n'
+        sys.stdout.flush()
+
         with open(f) as f:
             for l in f:
                 # empty line
@@ -42,7 +46,7 @@ if __name__ == '__main__':
                         l = f.readline()
 
                     try:
-                        day, month, year = l.split()
+                        day, month, year, *_ = l.split()
                         day = int(day)
                         year = int(year)
 
@@ -52,7 +56,7 @@ if __name__ == '__main__':
                                          'mai', 'juin', 'juillet', 'août',
                                          'septembre', 'octobre', 'novembre',
                                          'décembre']
-                        month = 1 + french_months.index(month)
+                        month = 1 + french_months.index(month.lower())
                     except:
                         # english date format
                         try:
@@ -85,4 +89,6 @@ if __name__ == '__main__':
 
         with open(os.path.join(out_dir, '%02d_%02d_%04d' % (day, month, year)), 'w') as f:
             f.write(out)
+
+    print()
 
