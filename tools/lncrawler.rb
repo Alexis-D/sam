@@ -65,26 +65,12 @@ class LexisNexisCrawler
   end
 
   def crawl_days(days, date)
-    days.times do
-      begin
-        crawl_one_day date
-      rescue Exception => e
-        if @browser.text.include? 'No Documents Found'
-          STDERR.puts "[INFO] #{date.to_s} - No document found."
-        else
-          STDERR.puts "[ERROR] #{date.to_s} - Something unexpected happened while crawling."
-          STDERR.puts "                       #{e.message}"
-          STDERR.puts e.backtrace.inspect
-        end
-      end
-      date = date.next_day
-    end
-
-    STDERR.puts "[INFO] #{date.to_s} - Next day."
+    crawl date, date + days
   end
 
-  def crawl_one_day(date)
-    STDERR.puts "[INFO] #{date.to_s} - Crawling."
+  def crawl_one_day(date, min=1, step=500)
+    max = min + step - 1
+    STDERR.puts "[INFO] #{date.to_s} - Crawling (#{min} - #{max})."
     # search
     @browser.goto @searchUrl
     @browser.text_field(:id => 'simpleSearchStyle').set(@search.first)
@@ -110,13 +96,13 @@ class LexisNexisCrawler
 
     # download options
     url = ''
+    count = 0
     @browser.window(:title => /download/i).use do
       @browser.select_list(:name => 'delFmt').select('Text')
 
-      if @browser.text.scan(/All Documents \(.*?\)/i).first.scan(/\(\d+\s*-\s*\d+\)/).first.scan(/\d+/).last.to_i > 500
-        @browser.text_field(:name => 'selDocs').set('1-500')
-        STDERR.puts "[WARNING] #{date.to_s} - More than 500 documents."
-      end
+      count = @browser.text.scan(/All Documents \(.*?\)/i).first.scan(/\(\d+\s*-\s*\d+\)/).first.scan(/\d+/).last.to_i
+      @browser.text_field(:name => 'selDocs').set("#{min}-#{[count, max].min}")
+      #STDERR.puts "[WARNING] #{date.to_s} - More than #{max} documents."
       @browser.link(:href => /delivery_DnldForm/).click
 
       sleep 1 until @browser.text.include? '.TXT'
@@ -126,6 +112,10 @@ class LexisNexisCrawler
 
     @browser.window(:title => /download/i).close
     @browser.goto url
+
+    if count > max
+      crawl_one_day date, min + step, step
+    end
   end
 
   def close
@@ -144,7 +134,7 @@ crawler.indexes = [17, 39, 59, 60, 86, 102, 144, 186, 190]
 # la tribune, latribune.fr
 crawler.login url
 #crawler.crawl Date.new(1999, 12, 30), Date.new(2000, 1, 2)
-crawler.crawl_days 15, Date.new(2006, 4, 5)
+crawler.crawl_days 20, Date.new(2007, 12, 28)
 sleep 10
 crawler.close
 
