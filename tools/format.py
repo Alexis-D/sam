@@ -1,10 +1,11 @@
 #!/usr/bin/env python
 #-*- coding: utf-8 -*-
 
+import glob
 import os.path
 import re
-import time
 import sys
+import time
 
 if __name__ == '__main__':
     # took the file downloaded from lexis nexis, and reformat them
@@ -16,6 +17,9 @@ if __name__ == '__main__':
 
     docs = re.compile(r'\d+ of \d+ documents', re.I)
     copy = re.compile(r'copyright', re.I)
+
+    for f in glob.glob(os.path.join(out_dir, '*')):
+        os.unlink(f)
 
     # for each filename
     for i, f in enumerate(sys.argv[1:]):
@@ -87,7 +91,7 @@ if __name__ == '__main__':
                     f.readline()
                     out += '===\n'
 
-        with open(os.path.join(out_dir, '%02d_%02d_%04d' % (day, month, year)), 'w') as f:
+        with open(os.path.join(out_dir, '%02d_%02d_%04d' % (day, month, year)), 'a') as f:
             f.write(out)
 
     print()
