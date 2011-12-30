@@ -62,6 +62,8 @@ class LexisNexisCrawler
       end
       from = from.next_day
     end
+
+    STDERR.puts "[INFO] #{from.to_s} - Next day."
   end
 
   def crawl_days(days, date)
@@ -101,10 +103,12 @@ class LexisNexisCrawler
       @browser.select_list(:name => 'delFmt').select('Text')
 
       count = @browser.text.scan(/All Documents \(.*?\)/i).first.scan(/\(\d+\s*-\s*\d+\)/).first.scan(/\d+/).last.to_i
-      @browser.text_field(:name => 'selDocs').set("#{min}-#{[count, max].min}")
-      #STDERR.puts "[WARNING] #{date.to_s} - More than #{max} documents."
-      @browser.link(:href => /delivery_DnldForm/).click
+      if count != 1
+        @browser.text_field(:name => 'selDocs').set("#{min}-#{[count, max].min}")
+        #STDERR.puts "[WARNING] #{date.to_s} - More than #{max} documents."
+      end
 
+      @browser.link(:href => /delivery_DnldForm/).click
       sleep 1 until @browser.text.include? '.TXT'
 
       url = @browser.link(:text => /\.TXT/).href
@@ -133,8 +137,8 @@ crawler.indexes = [17, 39, 59, 60, 86, 102, 144, 186, 190]
 # le parisien économie,
 # la tribune, latribune.fr
 crawler.login url
-#crawler.crawl Date.new(1999, 12, 30), Date.new(2000, 1, 2)
-crawler.crawl_days 20, Date.new(2007, 12, 28)
+crawler.crawl_days 15, Date.new(2008, 3, 16)
+
 sleep 10
 crawler.close
 
