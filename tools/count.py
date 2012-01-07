@@ -38,7 +38,7 @@ class Counter:
 
 
     def process(self, filename):
-        p, n = 0, 0
+        nw, p, n = 0, 0, 0
 
         with open(filename) as f:
             for l in f:
@@ -47,12 +47,13 @@ class Counter:
                     f.readline() # source
 
                 for w in words(l):
+                    nw += 1
                     if w in self.pos:
                         p += 1
                     elif w in self.neg:
                         n += 1
 
-        return p, n
+        return nw, p, n
 
 
 if __name__ == '__main__':
@@ -61,6 +62,6 @@ if __name__ == '__main__':
     c = Counter("data/lexicon")
 
     for f in sys.argv[1:]:
-        positive, negative = c.process(f)
-        print(f, positive, negative)
+        nwords, positive, negative = c.process(f)
+        print(f, nwords, positive, negative)
 
