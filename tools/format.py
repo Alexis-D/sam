@@ -24,7 +24,7 @@ if __name__ == '__main__':
     # for each filename
     for i, f in enumerate(sys.argv[1:-1]):
         out = ''
-        print('%4d/%4d' % (i + 1, len(sys.argv) - 1), end='')
+        print('%4d/%4d' % (i + 1, len(sys.argv) - 2), end='')
         print('\b' * 9, end='')
         # if not flushed, won't be printed until '\n'
         sys.stdout.flush()
@@ -50,16 +50,16 @@ if __name__ == '__main__':
                         l = f.readline()
 
                     try:
-                        day, month, year, *_ = l.split()
-                        day = int(day)
-                        year = int(year)
-
                         # time module & locale doesn't seemed to want to work
                         # properly so quick hack
                         french_months = ['janvier', 'février', 'mars', 'avril',
                                          'mai', 'juin', 'juillet', 'août',
                                          'septembre', 'octobre', 'novembre',
                                          'décembre']
+                        day, month, year, *_ = l.split()
+                        day = int(day)
+                        year = int(year)
+
                         month = 1 + french_months.index(month.lower())
                     except:
                         # english date format
