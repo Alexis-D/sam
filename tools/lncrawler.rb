@@ -62,12 +62,31 @@ class LexisNexisCrawler
       end
       from = from.next_day
     end
-
-    STDERR.puts "[INFO] #{from.to_s} - Next day."
   end
 
   def crawl_days(days, date)
     crawl date, date + days
+    STDERR.puts "[INFO] #{(date + days + 1).to_s} - Next day."
+  end
+
+  def crawl_days_backward(days, date)
+    days.times do
+      begin # copy/pasting is evil
+        crawl_one_day date
+      rescue Exception => e
+        if @browser.text.include? 'No Documents Found'
+          STDERR.puts "[INFO] #{date.to_s} - No document found."
+        else
+          STDERR.puts "[ERROR] #{date.to_s} - Something unexpected happened while crawling."
+          STDERR.puts "                       #{e.message}"
+          STDERR.puts e.backtrace.inspect
+        end
+      end
+
+      date = date.prev_day
+    end
+
+    STDERR.puts "[INFO] #{(date).to_s} - Previous day."
   end
 
   def crawl_one_day(date, min=1, step=500)
@@ -137,7 +156,8 @@ crawler.indexes = [17, 39, 59, 60, 86, 102, 144, 186, 190]
 # le parisien économie,
 # la tribune, latribune.fr
 crawler.login url
-crawler.crawl_days 15, Date.new(2008, 3, 16)
+#crawler.crawl_days 20, Date.new(2009, 3, 19)
+crawler.crawl_days_backward 30, Date.new(2005, 9, 16)
 
 sleep 10
 crawler.close
