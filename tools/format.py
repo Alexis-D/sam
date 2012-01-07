@@ -12,7 +12,7 @@ if __name__ == '__main__':
     # to be easier to use
     # (this script is quick 'n dirty)
 
-    out_dir = 'data/data/'
+    out_dir = sys.argv[-1]
     day, month, year = 0, 0, 0
 
     docs = re.compile(r'\d+ of \d+ documents', re.I)
@@ -22,7 +22,7 @@ if __name__ == '__main__':
         os.unlink(f)
 
     # for each filename
-    for i, f in enumerate(sys.argv[1:]):
+    for i, f in enumerate(sys.argv[1:-1]):
         out = ''
         print('%4d/%4d' % (i + 1, len(sys.argv) - 1), end='')
         print('\b' * 9, end='')
