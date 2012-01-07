@@ -6,3 +6,4 @@ data/lexicon_orig.dat
 __pycache__
 data/data
 500
+data/frequencies.csv
