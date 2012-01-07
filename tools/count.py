@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 #-*- coding: utf-8 -*-
 
+import os.path
 import re
 import sys
 import trie
@@ -57,11 +58,14 @@ class Counter:
 
 
 if __name__ == '__main__':
-    out_csv = sys.argv[-1]
+    out_csv = 'data/frequencies.csv'
+    c = Counter('data/lexicon')
 
-    c = Counter("data/lexicon")
-
-    for f in sys.argv[1:]:
-        nwords, positive, negative = c.process(f)
-        print(f, nwords, positive, negative)
+    with open(out_csv, 'w') as out:
+        out.write('Date      ,   #words,     +++,     ---\n')
+        for f in sys.argv[1:]:
+            nwords, positive, negative = c.process(f)
+            out.write('%s, %8d, %7d, %7d\n' %
+                    (os.path.basename(f).replace('_', '/'),
+                        nwords, positive, negative))
 
