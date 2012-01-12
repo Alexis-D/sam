@@ -156,9 +156,8 @@ crawler.indexes = [17, 39, 59, 60, 86, 102, 144, 186, 190]
 # le parisien économie,
 # la tribune, latribune.fr
 crawler.login url
-#crawler.crawl_days 20, Date.new(2009, 3, 19)
-crawler.crawl_days_backward 30, Date.new(2005, 9, 16)
-
-sleep 10
+#crawler.crawl_days_backward 30, Date.new(2003, 12, 31)
+#crawler.crawl_days 30, Date.new(2009, 4, 1)
+#sleep 10
 crawler.close
 
