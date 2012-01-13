@@ -63,7 +63,10 @@ if __name__ == '__main__':
 
     with open(out_csv, 'w') as out:
         out.write('Date      ,   #words,     +++,     ---\n')
-        for f in sys.argv[1:]:
+        for i, f in enumerate(sys.argv[1:], 1) :
+            print('%4d/%4d' % (i, len(sys.argv) - 1), end='')
+            sys.stdout.flush()
+            print('\b' * 9, end='')
             nwords, positive, negative = c.process(f)
             out.write('%s, %8d, %7d, %7d\n' %
                     (os.path.basename(f).replace('_', '/'),
