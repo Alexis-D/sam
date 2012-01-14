@@ -20,7 +20,7 @@ if __name__ == '__main__':
     freqs = 'data/frequencies.csv'
     out = 'data/merged.csv'
     start = datetime.date(2004, 1, 1) # included
-    end = datetime.date(2008, 4, 1) # excluded
+    end = datetime.date(2009, 4, 1) # excluded
 
     data = {}
 
