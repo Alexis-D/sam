@@ -1,0 +1,142 @@
+\documentclass[12pt,a4wide]{report}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{color}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{palatino}
+\usepackage{parskip}
+
+\newcommand{\superscript}[1]{\ensuremath{^{\textrm{#1}}}}
+\newcommand{\subscript}[1]{\ensuremath{_{\textrm{#1}}}}
+
+%\newcommand{\th}[0]{\superscript{th}}
+\newcommand{\st}[0]{\superscript{st}}
+\newcommand{\nd}[0]{\superscript{nd}}
+\newcommand{\rd}[0]{\superscript{rd}}
+
+\newcommand{\amp}{{\fontfamily{ppl}\selectfont\emph\&}}
+
+\lstset{numbers=left, basicstyle=\ttfamily, breaklines=true}
+
+\begin{document}
+	\title{Sentiment Analysis, News \amp{} CAC40}
+	\date{\today}
+	\author{Alexis Daboville}
+	
+	\maketitle
+	
+	\pagenumbering{roman}
+	\pagestyle{headings}
+	\tableofcontents
+	
+	\chapter{Acknowledgements}
+	
+	\chapter{Introduction}
+		% what? sentiment analysis? CAC?
+		% why ?
+		% how ?
+	
+	\chapter{Hypothesis}
+	
+	\chapter{Methodology}
+		\section{Getting the news}
+		
+			There was a few options to consider for getting news data. The first one was to know where to get the data, the second was how to get it.
+			
+			In 2009, Stéphane Kazmierczak got his data by crawling the website investir.fr\footnote{\url{http://www.investir.fr/}} which is a french news website about economy and stock markets. The problem is that there are two downsides using this approach:
+			\begin{itemize}
+				\item All the data comes from a single source.
+				\item Currently most of economics news website have paid archives (which prevents me from crawling them).
+			\end{itemize}
+			
+			The solution proposed by Khurshid Ahmad was to get the data from Lexis Nexis\footnote{\url{http://www.lexisnexis.com/en-us/home.page}}. Lexis Nexis is a platform which has numerous archives of newspapers (including French economic newspapers), and Trinity College has an agreement with them which allow Trinity students to use the service. Using this platform solved the two problems, because I was able to get data from multiple newspapers, and the Lexis Nexis website is ``crawlable''.
+			
+			However searching for archives for more than a few days is a tedious task, in consequence I developed a web crawler which browse Lexis Nexis automagically and download the data. Though, there was a few considerations to take into account. The first one was to crawl Lexis Nexis slowly to avoid to be ban from using the service. The second one was how to crawl the website (knowing that we need to perform multiple operations: login, search for archives of each day by filling multiple forms, clicking on various links\ldots). The first problem was easily solved, I decided to crawl no more than one month of data per day (so I needed roughly two month to get 64 months of data). The technical problem was more interesting, at first sight I though I would use Perl WWW::Mechanize\footnote{\url{http://search.cpan.org/dist/WWW-Mechanize/}} or Python Mechanize\footnote{\url{http://wwwsearch.sourceforge.net/mechanize/}}, unfortunately none of them was able to handle the Javascript stuff (and Lexis Nexis heavily rely on the ability to execute Javascript). In consequence I quickly look on the internet to find an alternative, and I found Watir\footnote{\url{http://watir.com/}}. Watir is described by Wikipedia\footnote{\url{http://en.wikipedia.org/wiki/Watir}} like that ``\emph{Web Application Testing in Ruby (or Watir, pronounced ``water'') is a toolkit used to automate browser-based tests during web application development.}'', so even if it's primary designed for testing purposes we can use it to crawl a website. In fact Watir was the chosen solution because it was simple, and there wasn't any better alternative. Moreover Watir is really simple to use, basically you just need to find the right HTML elements and then set them to the right values, or clicking them.
+			
+			For instance here's the method (part of the \lstinline!LexisNexisCrawler! class, in the file \lstinline!tools/lncrawler.rb!) that log the user in:
+			
+			\begin{lstlisting}[language=Ruby, basicstyle=]
+def login(url, user='', pass='')
+  # ask for login details
+  # before going to login
+  # page, so once it's filled user can go away
+  # obviously if login details are 
+  # provided to the method, doesn't ask
+  while user.empty? or pass.empty?
+    puts 'Username:'
+    user = gets.chomp
+    puts 'Password:'
+    pass = gets.chomp
+  end
+
+  # goto login page
+  @browser.goto url
+
+  @browser.text_field(:name => 'user').set(user)
+  @browser.text_field(:name => 'pass').set(pass)
+  @browser.button(:name => 'Submit2').click
+                                                                                                 
+  # accept term & conditions
+  @browser.link(:href => /submitterms\.do/).click
+
+  # get the search link
+  @searchUrl = @browser.link(:text => 'Search').href
+end
+			\end{lstlisting}
+			
+			Using the crawler developed with Watir I was able to fetch 560,000+ news (on the period from the January 1\st, 2004 to March 31\st, 2009) from several French economic newspapers or websites:
+			\begin{itemize}
+				\item L'Agefi quotidien
+				\item Boursier.com
+				\item Les \'Echos
+				\item Les\'Echos.fr
+				\item Le Figaro économie
+				\item Investir.fr
+				\item Le Parisien économie
+				\item La Tribune
+				\item LaTribune.fr
+			\end{itemize}
+			
+		\section{Getting the CAC40 data}
+		
+			The CAC40 data was simply downloaded from Yahoo! Finance\footnote{\url{http://finance.yahoo.com/q/hp?s=^FCHI+Historical+Prices}} which provides all the data we need in a handy  CSV file.
+		
+		\section{The dictionary}
+		
+			To analyse the sentiments expressed in the news I also needed a dictionary. The approach used was to merge two things:
+			\begin{itemize}
+				\item The General Inquirer (GI) Dictionary\footnote{\url{http://www.wjh.harvard.edu/~inquirer/}} which is the reference dictionary for sentiment analysis. It classifies hundreds of words in several categories like strong or weak, positive or negative, active or passive\ldots Here we just need the positive and negative categories.
+				\item The most common words in economic news.
+			\end{itemize}
+			
+			The GI dictionary was translated in French by Stéphane Kazmierczak, so I used it as a base.
+			
+			The most commons words were simply found using a little Python script which just splitted all text in different words (in Python terms it means \lstinline!re.findall(r'\w+', text, re.UNICODE)!), and finally just use \lstinline!collections.Counter! and the \lstinline!.most_common()! method to find the most commons words.
+			
+			I merged the two dictionaries by hand because I wanted to add a few improvements over the Kazmierczak's one. The first thing was to only keep words that were often used in French, the second and more important improvement was to allow jokers at the end of the words. For instance instead of storing the words \emph{augmentation}, \emph{augmenter}, \emph{augmente} and so on we use a * as a joker and we just store \emph{augment*}, so all words which have the prefix \emph{augment} will be matched.
+			
+			Then when I need to lookup if a word is in the dictionary I use two tries\footnote{Also know as prefix tree, see \url{http://en.wikipedia.org/wiki/Trie}} (one for the positive words, and one for the negative ones), so the lookup is fast.
+			
+		\section{Processing the data}
+			% reformat
+			% frequencies (normalization of words :D)
+			% merge in a csv
+			
+		\section{Analysis of the data}
+			% libreoffice calc	
+	\chapter{Results}
+		\section{Graph analysis}
+		
+		\section{Correlation between news and the CAC}
+	
+	\chapter{Future work}	
+	
+	\chapter{Conclusion}
+	
+	\chapter{Appendix}
+		% where to find the code...
+		
+\end{document}
