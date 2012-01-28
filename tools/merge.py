@@ -52,23 +52,27 @@ if __name__ == '__main__':
             d.words = int(row[1])
             d.pos = int(row[2])
             d.neg = int(row[3])
+            d.eco = int(row[4])
             d.pos_freq = d.pos / d.words
             d.neg_freq = d.neg / d.words
+            d.eco_freq = d.eco / d.words
 
     with open(out, 'w') as f:
-        f.write('Date, #words, #positive, #negative, pos freq, neg freq, volume, close\n')
+        f.write('Date, #words, #positive, #negative, domain, pos freq, neg freq, domain freq, volume, close\n')
 
         for date in sorted(data):
             if start <= date < end:
                 d = data[date]
 
-                f.write('%s, %s, %s, %s, %s, %s, %s, %s\n' % (
+                f.write('%s, %s, %s, %s, %s, %s, %s, %s, %s, %s\n' % (
                             date,
                             d.words if 'words' in d.__dict__ else '',
                             d.pos if 'pos' in d.__dict__ else '',
                             d.neg if 'neg' in d.__dict__ else '',
+                            d.eco if 'eco' in d.__dict__ else '',
                             d.pos_freq if 'pos_freq' in d.__dict__ else '',
                             d.neg_freq if 'neg_freq' in d.__dict__ else '',
+                            d.eco_freq if 'eco_freq' in d.__dict__ else '',
                             d.volume if 'volume' in d.__dict__ else '',
                             d.close if 'close' in d.__dict__ else '',
                             ))
