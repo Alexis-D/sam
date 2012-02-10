@@ -167,10 +167,31 @@ def words(s):
     return (normalize(w) for w in re.findall(_words_re, s))
     			\end{lstlisting}
     			
-    		The final step of processing the data was to merge the CSV produced by the script which count the words (\lstinline!tools/count.py!) and the CAC40 data. This was done by another Python script (\lstinline!tools/merge.py!).
+    		The final step of processing the data was to merge the CSV produced by the script which count the words (\lstinline!tools/count.py!) and the CAC40 data into another CSV file. This was done by another Python script (\lstinline!tools/merge.py!). During this step I also computed the frequencies of positive and negative words as:
+			
+			\begin{eqnarray*}
+				positive\_freq(day) &=& \frac{length(positive\_words(day))}{number\_of\_words(day)}\\
+				negative\_freq(day) &=& \frac{length(negative\_words(day))}{number\_of\_words(day)}
+			\end{eqnarray*}
 			
 		\section{Analysis of the data}
-			% libreoffice calc	
+			
+			The analysis of the data was done with LibreOffice Calc\footnote{\url{http://www.libreoffice.org/features/calc/}} which is a free and open source alternative to Microsoft Excel\footnote{\url{http://office.microsoft.com/en-us/excel/}}. To use it I just needed to import the  CSV file produced at the merge step. Then I was able to use the common functions like: \lstinline!AVERAGE!, \lstinline!STDEV!, \lstinline!PEARSON!, etc).
+			
+			Using LibreOffice Calc I performed several computations. I began by plotting the $positive\_freq(day)$, $positive\_freq(day)$, $close\_cac40(day)$ and $volume\_cac40(day)$. I also computed the mean and the standard deviation of each of these variable. Then I computed their daily logarithmic return. The logarithmic return is defined as  (Wikipedia\footnote{\url{http://en.wikipedia.org/wiki/Rate_of_return\#Logarithmic_or_continuously_compounded_return}}):
+			
+			$$return = \ln\frac{V_f}{V_i}$$
+			
+			Where $V_f$ is the final value investment and $V_i$ the initial value of investment. In order to compute our daily returns we do:
+			
+			\begin{eqnarray*}
+				positive\_return(day) &=& \ln\left(\frac{positive\_freq(day)}{positive\_freq(previous\_day(day))}\right)\\
+				negative\_return(day) &=& \ln\left(\frac{negative\_freq(day)}{negative\_freq(previous\_day(day))}\right)\\
+				close\_return(day) &=& \ln\left(\frac{close\_freq(day)}{close\_freq(previous\_day(day))}\right)\\
+				volume\_return(day) &=& \ln\left(\frac{volume\_freq(day)}{volume\_freq(previous\_day(day))}\right)
+			\end{eqnarray*}
+			
+			Finally I computed the 1 month volatility of the same variables which is the standard deviation of them over a 30 day period.
 			
 	\chapter{Experiments and Evaluation}
 		\section{Graph analysis}
