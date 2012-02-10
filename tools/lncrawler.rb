@@ -29,7 +29,9 @@ class LexisNexisCrawler
       puts 'Username:'
       user = gets.chomp
       puts 'Password:'
+      system 'stty -echo' # ugly
       pass = gets.chomp
+      system 'stty echo'
     end
 
     # goto login page
