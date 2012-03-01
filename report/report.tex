@@ -1,4 +1,4 @@
-\documentclass[12pt,]{report}
+\documentclass[12pt,notitlepage]{report}
 \usepackage[utf8]{inputenc}
 \usepackage{amsmath}
 \usepackage{amsfonts}
@@ -24,12 +24,18 @@
 
 \lstset{numbers=left, basicstyle=\ttfamily, breaklines=true}
 
+\renewcommand\chaptername{Section}
+
 \begin{document}
 	\title{Sentiment Analysis, News \amp{} CAC40}
 	\date{\today}
 	\author{Alexis Daboville}
 	
 	\maketitle
+	
+	\begin{abstract}
+		... needs to be written ...
+	\end{abstract}
 	
 	\pagenumbering{roman}
 	\pagestyle{headings}
@@ -153,7 +159,7 @@ end
 			number\_of\_words(day) &=& length(words(day))
 			\end{eqnarray*}
 			
-			For better results, the function words splitted news using a regex. Then I used a function to remove all diacritical signs (so the words were kind of ``normalized'', for instance the word \emph{éléphant} is transformed to \emph{elephant}. This is done by the following Python code:
+			For better results, the function words splitted news using a regex. Then I used a function to remove all diacritical signs (so the words were kind of ``normalized'', for instance the word \emph{éléphant} is transformed to \emph{elephant}). This is done by the following Python code:
 			
 			\begin{lstlisting}[language=Python]
 def normalize(w):
@@ -169,7 +175,7 @@ _words_re = re.compile(r'\w+')
 def words(s):
     """Returns all the words of a string."""
 
-    return (normalize(w) for w in re.findall(_words_re, s))
+    return (normalize(w) for w in _words_re.findall(s))
     			\end{lstlisting}
     			
     		The final step of processing the data was to merge the CSV produced by the script which count the words (\lstinline!tools/count.py!) and the CAC40 data into another CSV file. This was done by another Python script (\lstinline!tools/merge.py!). During this step I also computed the frequencies of positive and negative words as:
@@ -206,30 +212,57 @@ def words(s):
 			To get an insight of the data the first thing I did was to plot the data against time (see figures ~\ref{cac}, ~\ref{pos}, ~\ref{neg} and ~\ref{posdivneg}). It worth to be noted that the plots of returns and volatility doesn't show anything interesting (except that the returns and the volatility of the CAC40 is higher since the end of 2008) that's why they're not included here.
 
 			\begin{figure}[h]
-				\caption{CAC40 close in function of time\label{cac}}
+				\caption{CAC40 close over time\label{cac}}
 				\includegraphics{plots/cac.png}
 			\end{figure}
 
 			\begin{figure}[h]
-				\caption{Positive sentiments frequency in function of time\label{pos}}
+				\caption{Positive sentiments frequency over time\label{pos}}
 				\includegraphics{plots/pos.png}
 			\end{figure}
 	
 			\begin{figure}[h]
-				\caption{Negative sentiments frequency in function of time\label{neg}}
+				\caption{Negative sentiments frequency over time\label{neg}}
 				\includegraphics{plots/neg.png}
 			\end{figure}
 			
-			The first thing to notice is that the CAC40 globally went up until mid-2007 and went down after that. We can also see that the positive sentiments frequency was approximately constant until mid-2007 drop off a little and then was constant again.	As for negative sentiments it looks like an inverted parabola.
-
 			\begin{figure}[h]
-				\caption{$\dfrac{positive\ sentiments\ frequency}{negative\ sentiments\ frequency}$ in function of time\label{posdivneg}}
+				\caption{$\dfrac{positive\ sentiments\ frequency}{negative\ sentiments\ frequency}$ over time\label{posdivneg}}
 				\includegraphics{plots/posdivneg.png}
 			\end{figure}
 			
-			The most interesting graph is probably the last one which represent $\dfrac{positive\ sentiments}{negative\ sentiments}$ over time. It went up until mid-2007 and then drop off. We can see that the \emph{shape} of this graph looks a little bit like the one the CAC40.
+			The first thing to notice is that all the graph can be divided in the same periods:
+			\begin{itemize}
+				\item Before mid-2007
+				\item Mid-2007
+				\item After mid-2007
+			\end{itemize}
+
+			 We can sum up the trends in a table (see Table ~\ref{trends}). It's now easier to compare the time series with each other:
+			 \begin{itemize}
+			 	\item The level of positive sentiments is higher when the CAC40 goes up and lower when it goes down.
+			 	\item The level of negative sentiments seems to be the opposite of the CAC40 movements.
+			 	\item $\dfrac{Positive\ sentiments\ frequency}{Negative\ sentiments\ frequency}$ roughly follows the same directions than the CAC40.
+			 \end{itemize}
+
+			\begin{table}
+			\begin{tabular}{|c | c | c | c|}
+				\hline
+				& Before mid-2007 & Mid-2007 & After mid-2007\\
+				\hline
+				CAC40 close & $\nearrow$ & $\rightarrow$ $\searrow$ & $\searrow$\\
+				\hline
+				Positive sentiments frequency & $\rightarrow$ & $\searrow$ & $\rightarrow$\\
+				\hline
+				Negative sentiments frequency & $\searrow$ & $\rightarrow$ & $\nearrow$\\
+				\hline
+				$\dfrac{Positive\ sentiments\ frequency}{Negative\ sentiments\ frequency}$ & $\nearrow$ $\rightarrow$ & $\searrow$ & $\searrow$\\
+				\hline
+			\end{tabular}
+			\caption{CAC40 and sentiments trends\label{trends}}
+			\end{table}
 			
-			The analysis of the graph show clearly that the sentiments and the CAC40 follows some trends during \textbf{the same periods}. This is leaves us two questions: does CAC40 trends precedes sentiments trends (or the opposite)? Can we draw the same conclusion on a daily basis (instead of a four years time frame)?
+			This clearly shows that the sentiments and the CAC40 follows some trends during \textbf{the same periods} and \textbf{may be somewhat related}. This is leaves us two questions: does CAC40 trends follows sentiments trends (or the opposite)? Can we draw the same conclusion on a daily basis (instead of a four years time frame)?
 
 		\section{Correlation between news and the CAC}
 
