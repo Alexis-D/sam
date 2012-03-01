@@ -20,7 +20,7 @@ _words_re = re.compile(r'\w+')
 def words(s):
     """Returns all the words of a string."""
 
-    return (normalize(w) for w in re.findall(_words_re, s))
+    return (normalize(w) for w in _words_re.findall(s))
 
 
 class Counter:
