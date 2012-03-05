@@ -266,28 +266,44 @@ def words(s):
 
 		\section{Correlation between news and the CAC}
 
-			The primary goal of this project was to show if there's a correlation between sentiments expressed in economic news and the changes of the CAC40. It's possible to search a correlation between the returns or the volatily of the CAC/the sentiments.
+			The primary goal of this project was to show if there's a correlation between sentiments expressed in economic news and the daily changes of the CAC40. It's possible to search a correlation between the returns or the volatily of the CAC/the sentiments.
 			
 			To do this I used the Pearson correlation\footnote{\url{http://en.wikipedia.org/wiki/Pearson_product-moment_correlation_coefficient}}. Pearson correlation is a mathematical tool which try to show if there's a correlation between two datasets. It gives us a \emph{correlation coefficient} in the range $[-1, 1]$. If the value of $|correlation\ coefficient|$ is close to 1 this means that it exists a strong correlation between the two datasets, a value close to 0 means that there's no correlation.
 			
-			To find a correlation, correlation coefficients between returns of sentiments, CAC40 close and CAC40 volume were calculated. I computed them on the same day or with an interval of one day (to see if news forecasts the CAC40 or the inverse). The results are show in the table ~\ref{pearson}. We can see that all the coefficients are close to 0 which means that we can't show that there's a correlation between the returns of sentiments and the returns of the CAC40 or the returns of the CAC40 volume.
+			Correlation coefficients between returns of sentiments, CAC40 close and CAC40 volume were calculated. I computed them on the same day or with an interval of one day (to see if news forecasts the CAC40 or the inverse). The results are show in the table ~\ref{pearson_cac} and ~\ref{pearson_volume}. We can see that all the coefficients are within the interval $[-0.1, 0.1]$ which means that we can't show that there's a correlation between the returns of sentiments and the returns of the CAC40 or the returns of the CAC40 volume.
 			
 			\begin{table}
-			\begin{tabular}{|m{2.75cm} | m{2.5cm} | m{2.5cm} | m{2.5cm} | m{2.5cm}|}
+			\begin{tabular}{|c | c | c | c|}
 				\hline
-				& Positive sentiments and CAC40 close & Negative sentiments and CAC40 close & Positive sentiments and CAC40 Volume & Negative sentiments and CAC40 Volume\\
+				Sentiments date and CAC40 date & Positive sentiments & Negative sentiments & $\dfrac{Positive}{Negative}$\\
 				\hline
-				sentiment(day - 1) and cac(day) & -0.0280 & -0.0583 & -0.0453 & -0.0941\\
+				previous(day) and day & -0.0280 & -0.0583 & 0.0292\\
 				\hline
-				sentiment(day) and cac(day) & 0.0450 & -0.0764 & -0.0201 & -0.0681\\				
+				day and day & 0.0450 & -0.0764 & 0.0956\\
 				\hline
-				sentiment(day + 1) and cac(day) & 0.0491 & 0.0305 & 0.0263 & -0.0941\\
+				next(day) and day & 0.0491 & 0.0305 & 0.0089\\
 				\hline
 			\end{tabular}
 			
-			\caption{Pearson correlation between returns of dataset of the first row at different times (first column)\label{pearson}}
+			\caption{Pearson correlation between sentiments returns and CAC40 returns.\label{pearson_cac}}
 			\end{table}
 
+			\begin{table}
+			\begin{tabular}{|c | c | c | c|}
+				\hline
+				Sentiments date and CAC40 date & Positive sentiments & Negative sentiments & $\dfrac{Positive}{Negative}$\\
+				\hline
+				previous(day) and day & -0.0655 & 0.0537 & -0.0899\\
+				\hline
+				day and day & -0.0201 & -0.0681 & 0.0433\\
+				\hline
+				next(day) and day & 0.0936 & 0.0473 & 0.0247\\
+				\hline
+			\end{tabular}
+			
+			\caption{Pearson correlation between sentiments returns and CAC40 volume returns.\label{pearson_volume}}
+			\end{table}
+			
 		% correlation volatility
 	
 	\chapter{Afterword}
