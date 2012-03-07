@@ -159,7 +159,7 @@ end
 			number\_of\_words(day) &=& length(words(day))
 			\end{eqnarray*}
 			
-			For better results, the function words splitted news using a regex. Then I used a function to remove all diacritical signs (so the words were kind of ``normalized'', for instance the word \emph{éléphant} is transformed to \emph{elephant}). This is done by the following Python code:
+			For better results, the function \lstinline!words(s)! splitted news using a regex. Then I used a function to remove all diacritical signs (so the words were kind of ``normalized'', for instance the word \emph{éléphant} is transformed to \emph{elephant}). This is done by the following Python code:
 			
 			\begin{lstlisting}[language=Python]
 def normalize(w):
@@ -191,11 +191,11 @@ def words(s):
 			
 			The analysis of the data was done with LibreOffice Calc\footnote{\url{http://www.libreoffice.org/features/calc/}} which is a free and open source alternative to Microsoft Excel\footnote{\url{http://office.microsoft.com/en-us/excel/}}. To use it I just needed to import the  CSV file produced at the merge step. Then I was able to use the common functions like: \lstinline!AVERAGE!, \lstinline!STDEV!, \lstinline!PEARSON!, etc).
 			
-			Using LibreOffice Calc I performed several computations. I began by plotting the $positive\_freq(day)$, $positive\_freq(day)$, $close\_cac40(day)$ and $volume\_cac40(day)$. I also computed the mean and the standard deviation of each of these variable. Then I computed their daily logarithmic return. The logarithmic return is defined as  (Wikipedia\footnote{\url{http://en.wikipedia.org/wiki/Rate_of_return\#Logarithmic_or_continuously_compounded_return}}):
+			Using LibreOffice Calc I performed several computations. I began by plotting the $positive\_freq(day)$, $negative\_freq(day)$, $close\_cac40(day)$ and $volume\_cac40(day)$. I also computed the mean and the standard deviation of each of these variable. Then I computed their daily logarithmic return. The logarithmic return is defined as  (Wikipedia\footnote{\url{http://en.wikipedia.org/wiki/Rate_of_return\#Logarithmic_or_continuously_compounded_return}}):
 			
 			$$return = \ln\frac{V_f}{V_i}$$
 			
-			Where $V_f$ is the final value investment and $V_i$ the initial value of investment. In order to compute our daily returns we do:
+			Where $V_f$ is the final value investment and $V_i$ the initial value of investment. In order to compute daily returns we do:
 			
 			\begin{eqnarray*}
 				positive\_return(day) &=& \ln\left(\frac{positive\_freq(day)}{positive\_freq(previous\_day(day))}\right)\\
@@ -245,6 +245,7 @@ def words(s):
 			 	\item $\dfrac{Positive\ sentiments\ frequency}{Negative\ sentiments\ frequency}$ roughly follows the same directions than the CAC40.
 			 \end{itemize}
 
+			\begin{center}
 			\begin{table}
 			\begin{tabular}{|c | c | c | c|}
 				\hline
@@ -261,6 +262,7 @@ def words(s):
 			\end{tabular}
 			\caption{CAC40 and sentiments trends\label{trends}}
 			\end{table}
+			\end{center}
 			
 			This clearly shows that the sentiments and the CAC40 follows some trends during \textbf{the same periods} and \textbf{may be somewhat related}. This is leaves us two questions: does CAC40 trends follows sentiments trends (or the opposite)? Can we draw the same conclusion on a daily basis (instead of a four years time frame)?
 
@@ -288,6 +290,10 @@ def words(s):
 			\caption{Pearson correlation between sentiments returns and CAC40 returns.\label{pearson_cac}}
 			\end{table}
 
+			% TODO
+			% * correl volume returns
+			% * correl volatility
+
 			\begin{table}
 			\begin{tabular}{|c | c | c | c|}
 				\hline
@@ -304,7 +310,6 @@ def words(s):
 			\caption{Pearson correlation between sentiments returns and CAC40 volume returns.\label{pearson_volume}}
 			\end{table}
 			
-		% correlation volatility
 			\begin{table}
 			\begin{center}
 			\begin{tabular}{|c | c | c|}
