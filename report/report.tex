@@ -37,7 +37,7 @@
 	\maketitle
 	
 	\begin{abstract}
-		... needs to be written ...
+		\ldots to be written \ldots
 	\end{abstract}
 	
 	\pagenumbering{roman}
@@ -66,14 +66,14 @@
 			In 2009, Stéphane Kazmierczak did similar experiments and got his data by crawling the website Investir.fr\footnote{\url{http://www.investir.fr/}}. Investir.fr is a website about economy and stock markets. The problem is that there are two downsides using this approach:
 			\begin{itemize}
 				\item All the data comes from a single source.
-				\item Currently most of economics news website have paid archives (which prevented me from crawling them).
+				\item Currently most of economics news website have paid archives (which prevents me from crawling them).
 			\end{itemize}
 			
 			The solution proposed by Khurshid Ahmad was to get the data from Lexis Nexis\footnote{\url{http://www.lexisnexis.com/en-us/home.page}}. Lexis Nexis is a platform which has numerous archives of newspapers (including French economic newspapers). Fortunately Trinity College has an agreement with them which allow Trinity students to use the service. Using this platform solved the two problems. In fact I was able to get data from multiple newspapers, and the Lexis Nexis website is ``crawlable''.
 			
-			However searching for archives for more than a few days is a tedious task. In consequence I developed a web crawler which browse Lexis Nexis automagically and download the data. Though, there was a few considerations to take into account. The first one was to crawl Lexis Nexis slowly to avoid to be ban from using the service. The second one was how to crawl the website. The first problem was easily solved, I decided to crawl no more than one month of data per day. So I needed roughly two month to get 64 months of data. The technical problem was more interesting. The first thing to consider is that I needed to be able to perform a lot of things with my robot: login, search for archives of each day by filling multiple forms, clicking on various links\ldots. At first sight I though I would use Perl WWW::Mechanize\footnote{\url{http://search.cpan.org/dist/WWW-Mechanize/}} or Python Mechanize\footnote{\url{http://wwwsearch.sourceforge.net/mechanize/}}. Unfortunately none of them was able to handle the Javascript stuff (and Lexis Nexis heavily rely on the ability to execute Javascript). In consequence I quickly look on the internet to find an alternative, and I found Watir\footnote{\url{http://watir.com/}}. Watir is described by Wikipedia\footnote{\url{http://en.wikipedia.org/wiki/Watir}} like that ``\emph{Web Application Testing in Ruby (or Watir, [\ldots]) is a toolkit used to automate browser-based tests during web application development.}''. So even if it's primary designed for testing purposes we can use it to crawl a website. In fact Watir was the chosen solution because it was simple, and there wasn't any better alternative. Moreover Watir is really simple to use, the basic steps for using it are:
+			However searching for archives for more than a few days is a tedious task. In consequence I developed a web crawler which browse Lexis Nexis automatically and download the data. Though, there was a few considerations to take into account. The first one was to crawl Lexis Nexis slowly to avoid to be ban from using the service. The second one was how to crawl the website. The first problem was easily solved, I decided to crawl no more than one month of data per day. So I needed roughly two months to get 63 months of data. The technical problem was more interesting. The first thing to consider is that I needed to be able to perform a lot of things with my robot: login, search for archives of each day by filling multiple forms, clicking on various links\ldots At first sight I though I would use Perl WWW::Mechanize\footnote{\url{http://search.cpan.org/dist/WWW-Mechanize/}} or Python Mechanize\footnote{\url{http://wwwsearch.sourceforge.net/mechanize/}}. Unfortunately none of them was able to handle the Javascript stuff (and Lexis Nexis heavily rely on the ability to execute Javascript). In consequence I quickly look on the Internet to find an alternative, and I found Watir\footnote{\url{http://watir.com/}}. Watir is described by Wikipedia\footnote{\url{http://en.wikipedia.org/wiki/Watir}} like that: ``\emph{Web Application Testing in Ruby (or Watir, [\ldots]) is a toolkit used to automate browser-based tests during web application development.}''. So even if it's primary designed for testing purposes we can use it to crawl a website. In fact Watir was the chosen solution because it was simple, and there wasn't any better alternative. Using Watir can be summed up in two steps:
 			\begin{enumerate}
-				\item Find the correct HTML element.
+				\item Find the correct HTML\footnote{HyperText Markup Language.}/DOM\footnote{Document Object Model.} element.
 				\item Set it to the right value and/or click it.
 			\end{enumerate}
 			
@@ -132,7 +132,7 @@ end
 			
 			For the first dictionary, the idea used was to merge two things:
 			\begin{itemize}
-				\item The General Inquirer (GI) Dictionary\footnote{\url{http://www.wjh.harvard.edu/~inquirer/}} which is the reference dictionary for sentiment analysis. It classifies hundreds of words in several categories like strong or weak, positive or negative, active or passive\ldots Here we just need the positive and negative categories.
+				\item The General Inquirer (GI) Dictionary\footnote{\url{http://www.wjh.harvard.edu/~inquirer/}} which is the reference dictionary for sentiment analysis. It classifies hundreds of words in several categories like strong or weak, positive or negative, active or passive\ldots Here I just needed the positive and negative categories.
 				\item The most common words in economic news.
 			\end{itemize}
 			
@@ -140,13 +140,15 @@ end
 			
 			The most commons words were simply found using a little Python script. It just splitted all text in different words (in Python terms it means \lstinline!re.findall(r'\w+', text, re.UNICODE)!), and finally just use \lstinline!collections.Counter! and the \lstinline!.most_common()! method to find the most commons words.
 			
-			I merged the two dictionaries by hand because I wanted to add a few improvements over the Kazmierczak's one. The first thing was to only keep words that were often used in French. The second and more important improvement was to allow jokers at the end of the words. For instance instead of storing the words \emph{augmentation}, \emph{augmenter}, \emph{augmente} and so on I used a * as a joker and we just store \emph{augment*}, so all words which have the prefix \emph{augment} are matched.
+			I merged the two dictionaries by hand because I wanted to add a few improvements over the Kazmierczak's one. The first thing was to only keep words that were often used in French. The second and more important improvement was to allow jokers at the end of the words. For instance instead of storing the words \emph{augmentation}, \emph{augmenter}, \emph{augmente} and so on I used a * as a joker and I just stored \emph{augment*}, so all words which have the prefix \emph{augment} are matched.
 			
 			The second dictionary was easy to build, I just translated (some of)\footnote{Only the ones that were translatable by a single word in French.} the economic words listed on InvestorWords.com\footnote{\url{http://www.investorwords.com/cgi-bin/bysubject.cgi?8}}.
 			
-			Then when I need to lookup if a word is in one of the dictionary I use tries\footnote{Also known as prefix tree, see \url{http://en.wikipedia.org/wiki/Trie} for more informations.}, so the lookup is fast.
+			Then when I needed to lookup if a word is in one of the dictionary I used tries\footnote{Also known as prefix tree, see \url{http://en.wikipedia.org/wiki/Trie} for more informations.}, so the lookup was fast.
 			
 		\section{Processing the data}
+		
+			\emph{\color{red}I'm not sure I'll leave this here (3.4 \& 3.5): the definitions of sentiment frequencies/returns should probably go in the 1\st section\ldots}
 		
 			Once I had all the news the first thing to do was to reformat them. For example I had to remove useless metadata and normalize the dates (which were sometimes in French and sometimes in English\ldots). This work was done with a little Python script (\lstinline!tools/format.py!).
 			
@@ -214,7 +216,7 @@ def words(s):
 	\chapter{Experiments and Evaluation}
 		\section{Graph analysis}
 		
-			To get an insight of the data the first thing I did was to plot the data against time (see figures ~\ref{cac}, ~\ref{pos}, ~\ref{neg} and ~\ref{posdivneg}). It worth to be noted that the plots of returns and volatility doesn't show anything interesting (except that the returns and the volatility of the CAC40 is higher since the end of 2008) that's why they're not included here.
+			To get an insight of the data the first thing I did was to plot the data against time (see figures ~\ref{cac}, ~\ref{pos}, ~\ref{neg} and ~\ref{posdivneg}). It worth to be noted that the plots of returns and volatility doesn't show anything interesting --except that the magnitude of both returns and volatility of the CAC40 is higher since the end of 2008-- that's why they're not included here.
 
 			\begin{figure}[h]
 				\caption{CAC40 close over time\label{cac}}
