@@ -8,3 +8,4 @@ data/data
 500
 data/frequencies.csv
 report/*
+*.xlsx
