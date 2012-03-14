@@ -152,19 +152,19 @@ end
 		
 			Once I had all the news the first thing to do was to reformat them. For example I had to remove useless metadata and normalize the dates (which were sometimes in French and sometimes in English\ldots). This work was done with a little Python script (\lstinline!tools/format.py!).
 			
-			Once it was done I was able to perform calculation over the corpus. For each day I computed the number of positive words, negative words and the total number of words.
+			Once it was done I was able to perform calculation over the corpus. For each day I computed the number of positive words, negative words and the total number of words, (see equations ~\ref{pwords}, ~\ref{nwords} and ~\ref{twords}).
 			
-			\begin{eqnarray*}
+			\begin{eqnarray}
 			words(day) &=& \textrm{A set of all words in the news of day}\\
 			\\			
 			positive\_set &=& positive\_words\_set - economic\_words\_set\\
-			positive\_words(day) &=& \sum_{w \textrm{ in } words(day)} (1\textrm{ if }w \textrm{ in } positive\_set \textrm{ otherwise } 0)\\
+			positive\_words(day) &=& \sum_{w \textrm{ in } words(day)} (1\textrm{ if }w \textrm{ in } positive\_set \textrm{ otherwise } 0)\label{pwords}\\
 			\\
 			negative\_set &=& negative\ words\ set - economic\ words\ set\\
-			negative\_words(day) &=& \sum_{w \textrm{ in } words(day)} (1\textrm{ if }w \textrm{ in } negative\_set \textrm{ otherwise } 0)\\
+			negative\_words(day) &=& \sum_{w \textrm{ in } words(day)} (1\textrm{ if }w \textrm{ in } negative\_set \textrm{ otherwise } 0)\label{nwords}\\
 			\\
-			number\_of\_words(day) &=& length(words(day))
-			\end{eqnarray*}
+			number\_of\_words(day) &=& length(words(day))\label{twords}
+			\end{eqnarray}
 			
 			For better results, the function \lstinline!words(s)! splitted news using a regex. Then I used a function to remove all diacritical signs (so the words were kind of ``normalized'', for instance the word \emph{éléphant} is transformed to \emph{elephant}). This is done by the following Python code:
 			
@@ -184,13 +184,13 @@ def words(s):
 
     return (normalize(w) for w in _words_re.findall(s))
     			\end{lstlisting}
-    			
-    		The final step of processing the data was to merge the CSV produced by the script which count the words (\lstinline!tools/count.py!) and the CAC40 data into another CSV file. This was done by another Python script (\lstinline!tools/merge.py!). During this step I also computed the frequencies of positive and negative words as:
+
+				The final step of processing the data was to merge the CSV produced by the script which count the words (\lstinline!tools/count.py!) and the CAC40 data into another CSV file. This was done by another Python script (\lstinline!tools/merge.py!). During this step I also computed the frequencies of positive and negative words (equations ~\ref{pfreq} and ~\ref{nfreq}).
 			
-			\begin{eqnarray*}
-				positive\_freq(day) &=& \frac{length(positive\_words(day))}{number\_of\_words(day)}\\
-				negative\_freq(day) &=& \frac{length(negative\_words(day))}{number\_of\_words(day)}
-			\end{eqnarray*}
+			\begin{eqnarray}
+				positive\_freq(day) &=& \frac{length(positive\_words(day))}{number\_of\_words(day)}\label{pfreq}\\
+				negative\_freq(day) &=& \frac{length(negative\_words(day))}{number\_of\_words(day)}\label{nfreq}
+			\end{eqnarray}
 			
 			Usually the sentiment frequencies are defined as the average of the sentiment frequency of each news for a given day. I decided to do it differently because doing it this way gives \emph{less weight} to short stories.
 			
@@ -198,18 +198,20 @@ def words(s):
 			
 			The analysis of the data was done with LibreOffice Calc\footnote{\url{http://www.libreoffice.org/features/calc/}} which is a free and open source alternative to Microsoft Excel\footnote{\url{http://office.microsoft.com/en-us/excel/}}. To use it I just needed to import the  CSV file produced at the merge step. Then I was able to use the common functions like: \lstinline!AVERAGE!, \lstinline!STDEV!, \lstinline!PEARSON!, etc).
 			
-			Using LibreOffice Calc I performed several computations. I began by plotting the $positive\_freq(day)$, $negative\_freq(day)$, $close\_cac40(day)$ and $volume\_cac40(day)$. I also computed the mean and the standard deviation of each of these variable. Then I computed their daily logarithmic return. The logarithmic return is defined as  (Wikipedia\footnote{\url{http://en.wikipedia.org/wiki/Rate_of_return\#Logarithmic_or_continuously_compounded_return}}):
+			Using LibreOffice Calc I performed several computations. I began by plotting the $positive\_freq(day)$, $negative\_freq(day)$, $close\_cac40(day)$ and $volume\_cac40(day)$. I also computed the mean and the standard deviation of each of these variable. Then I computed their daily logarithmic return. The logarithmic return is defined as equation ~\ref{return} (Wikipedia\footnote{\url{http://en.wikipedia.org/wiki/Rate_of_return\#Logarithmic_or_continuously_compounded_return}}).
 			
-			$$return = \ln\frac{V_f}{V_i}$$
+			\begin{eqnarray}
+				return = \ln\frac{V_f}{V_i}\label{return}
+			\end{eqnarray}
 			
-			Where $V_f$ is the final value investment and $V_i$ the initial value of investment. In order to compute daily returns we do:
+			Where $V_f$ is the final value investment and $V_i$ the initial value of investment. In order to compute daily returns we use equations ~\ref{preturn}, ~\ref{nreturn}, ~\ref{creturn} and ~\ref{vreturn}.
 			
-			\begin{eqnarray*}
-				positive\_return(day) &=& \ln\left(\frac{positive\_freq(day)}{positive\_freq(previous\_day(day))}\right)\\
-				negative\_return(day) &=& \ln\left(\frac{negative\_freq(day)}{negative\_freq(previous\_day(day))}\right)\\
-				close\_return(day) &=& \ln\left(\frac{close\_freq(day)}{close\_freq(previous\_day(day))}\right)\\
-				volume\_return(day) &=& \ln\left(\frac{volume\_freq(day)}{volume\_freq(previous\_day(day))}\right)
-			\end{eqnarray*}
+			\begin{eqnarray}
+				positive\_return(day) &=& \ln\left(\frac{positive\_freq(day)}{positive\_freq(previous\_day(day))}\right)\label{preturn}\\
+				negative\_return(day) &=& \ln\left(\frac{negative\_freq(day)}{negative\_freq(previous\_day(day))}\right)\label{nreturn}\\
+				close\_return(day) &=& \ln\left(\frac{close\_freq(day)}{close\_freq(previous\_day(day))}\right)\label{creturn}\\
+				volume\_return(day) &=& \ln\left(\frac{volume\_freq(day)}{volume\_freq(previous\_day(day))}\right)\label{vreturn}
+			\end{eqnarray}
 			
 			Finally I computed the 1 month volatility of the same variables which is the standard deviation of them over a 30 day period.
 			
@@ -297,10 +299,6 @@ def words(s):
 			\caption{Pearson correlation between sentiments returns and CAC40 returns.\label{pearson_cac}}
 			\end{table}
 
-			% TODO
-			% * correl volume returns
-			% * correl volatility
-
 			\begin{table}
 			\begin{tabular}{|c | c | c | c|}
 				\hline
@@ -316,7 +314,14 @@ def words(s):
 			
 			\caption{Pearson correlation between sentiments returns and CAC40 volume returns.\label{pearson_volume}}
 			\end{table}
-			
+
+		To be complete I also computed other correlations about volatility:
+			\begin{itemize}
+				\item Between sentiments and CAC40 close, table ~\ref{pearson_vol_cac}.
+				\item Between sentiments and CAC40 volume, table ~\ref{pearson_vol_vol}.
+			\end{itemize}
+			However all the correlation coefficient are in the interval $[-0.21, 0.32]$. This is better than the returns correlations, but this is still low.
+
 			\begin{table}
 			\begin{center}
 			\begin{tabular}{|c | c | c|}
@@ -344,10 +349,71 @@ def words(s):
 			
 			\caption{Pearson correlation between sentiments volatility and CAC40 volume volatility (over 30 days).\label{pearson_vol_vol}}
 			\end{table}
-	
+
+		\section{Toward a better hypothesis}
+
+		If we look at the CAC40 close data we can see that two consecutive close are highly correlated (the correlation coefficient is higher than 0.99). We can also see that this remains true for closes separated by a few days. So we may try another hypothesis, see equation ~\ref{hypo_cac}.
+
+			\begin{eqnarray}
+				cac40\_close(t) = \alpha_0 + \sum_{i = 1}^{n}\left(\alpha_i\times{}cac40\_close(t - i)\right) + \varepsilon(t)\label{hypo_cac}
+			\end{eqnarray}
+
+			For some small $n$, say 7. The interesting part is the error term $\varepsilon(t)$. It's a small variation and we make the hypothesis that its value is influenced by sentiments.
+
+			To find the $\alpha_i$ I used an autoregressive model\footnote{I used a Python module by Ernesto Adorio which can be found \href{http://adorio-research.org/wordpress/?p=4551}{here}.}, ``trained'' over 90\% of the data. Then I computed the error term produced by the model on the remaining 10\% of the data, see equation ~\ref{hypo_epsilon}.
+
+			\begin{eqnarray}
+				\varepsilon(t) = cac40\_close(t) - \alpha_0 - \sum_{i = 1}^{7} \left(\alpha_i\times{}cac40\_close(t - i)\right)\label{hypo_epsilon}
+			\end{eqnarray}
+
+			Finally to test the validity of the hypothesis I computed various correlations between sentiments and $\varepsilon(t)$. The results can be seen in the table ~\ref{pearson_cac_ar}. Again the correlations coefficients are low (in the interval $[-0.1, 0.3]$) \emph{but} they are higher than the direct correlation between returns. So even if the correlation is far from perfect it looks like this hypothesis is better. Obviously they are numerous factors distincts from sentiments which occurs in the value of $\varepsilon(t)$, that's why the correlation is low.
+
+			\begin{table}
+			\begin{tabular}{|c | c | c | c|}
+				\hline
+				Sentiments date and CAC40 date & Positive sentiments & Negative sentiments & $\dfrac{Positive}{Negative}$\\
+				\hline
+				previous(day) and day & -0.06 & 0.17 & -0.10\\
+				\hline
+				day and day & 0.17 & -0.05 & 0.17\\
+				\hline
+				next(day) and day & -0.08 & 0.27 & 0.17\\
+				\hline
+			\end{tabular}
+
+			\caption{Pearson correlation between sentiments and $\varepsilon(t)$\label{pearson_cac_ar}}
+			\end{table}
+
+			It's also possible to apply the same analysis with the CAC40 volume, where the formula is nearly the same, see equation ~\ref{hypo_vol} (the only change is $\alpha_i \rightarrow \alpha_{v_i}$ and $\varepsilon(t) \rightarrow \varepsilon_v(t)$ to avoid confusion).
+
+			\begin{eqnarray}
+				cac40\_volume(t) = \alpha_{v_0} + \sum_{i = 1}^{7}\left(\alpha_{v_i}\times{}cac40\_volume(t - i)\right) + \varepsilon_v(t)\label{hypo_vol}
+			\end{eqnarray}
+
+			I applied the same process to find the $\alpha_{v_i}$ and then I computed the correlations coefficient between sentiments and $\varepsilon_v(t)$ (see table ~\ref{pearson_cac_vol_ar}). We can draw the same conclusions as for the close data: the coefficients are still low (in $[-0.24, 0.30]$) \emph{but} they are higher than the simple correlation between returns.
+
+			\begin{table}
+			\begin{tabular}{|c | c | c | c|}
+				\hline
+				Sentiments date and CAC40 date & Positive sentiments & Negative sentiments & $\dfrac{Positive}{Negative}$\\
+				\hline
+				previous(day) and day & -0.13 & 0.16 & -0.24\\
+				\hline
+				day and day & 0.13 & 0.30 & -0.16\\
+				\hline
+				next(day) and day & 0.05 & 0.14 & -0.09\\
+				\hline
+			\end{tabular}
+
+			\caption{Pearson correlation between sentiments and $\varepsilon_v(t)$\label{pearson_cac_vol_ar}}
+			\end{table}
+
 	\chapter{Afterword}
 		% conclusion
 		% results?
 		% future work
+		% - nn?
+		% - 7? try with other value in [1,15]
+		% - non linear correlation
 		
 \end{document}
