@@ -58,13 +58,26 @@
 		% hypothesis
 	
 	\chapter{Literature Review}
+		
+		In the past many authors suggested that the sentiments may have repercussions on other fields. Examples of such studies include topics like politics (e.g. K. Ahmad et al. \cite{ahmad11}) or economy (e.g. P. Tetlock \cite{tetlock07}).
+		
+		These sentiments can from several sources:
+		\begin{itemize}
+			\item News (e.g. K. Ahmad et al. \cite{ahmad11})
+			\item Blogs (e.g. K. Ahmad et al. \cite{ahmad11})
+			\item Social Networks (e.g. A. Pak et al. \cite{pak10})
+		\end{itemize}
+		
+		In this study we'll focus on sentiments expressed by economic newspapers, because we are interested in the impact of sentiments on stocks markets. In order to build an ``index'' of sentiments that varies over time and which not depends on the volume of news for a given day we compute the sentiments frequencies for each days. Of course we distinguish two main categories of sentiments: the positive ones and the negatives one.
+		
+		The studied market will be the CAC40. This is the major French stock index. It's composed by 40 of the most important French companies. Each company is pondered by a weight so the biggest company have more importance in the overall index. The most important companies being Total (oil), Sanofi () and BNP Paribas (banking). The full list of the companies constituent the index can be found \href{http://en.wikipedia.org/wiki/CAC40}{here}. The method to compute index value can be found \href{http://www.euronext.com/fic/000/050/871/508718.pdf}{here}.
 	
 	\chapter{Methodology}
 		\section{Getting the news}
 		
 			There was a few options to consider for getting news data. The first one was to know where to get the data, the second was how to get it.
 			
-			In 2009, Stéphane Kazmierczak did similar experiments and got his data by crawling the website Investir.fr\footnote{\url{http://www.investir.fr/}}. Investir.fr is a website about economy and stock markets. The problem is that there are two downsides using this approach:
+			In 2009, Stéphane Kazmierczak \cite{kazmierczak08} did similar experiments and got his data by crawling the website Investir.fr\footnote{\url{http://www.investir.fr/}}. Investir.fr is a website about economy and stock markets. The problem is that there are two downsides using this approach:
 			\begin{itemize}
 				\item All the data comes from a single source.
 				\item Currently most of economics news website have paid archives (which prevents me from crawling them).
@@ -72,7 +85,7 @@
 			
 			The solution proposed by Khurshid Ahmad was to get the data from Lexis Nexis\footnote{\url{http://www.lexisnexis.com/en-us/home.page}}. Lexis Nexis is a platform which has numerous archives of newspapers (including French economic newspapers). Fortunately Trinity College has an agreement with them which allow Trinity students to use the service. Using this platform solved the two problems. In fact I was able to get data from multiple newspapers, and the Lexis Nexis website is ``crawlable''.
 			
-			However searching for archives for more than a few days is a tedious task. In consequence I developed a web crawler which browse Lexis Nexis automatically and download the data. Though, there was a few considerations to take into account. The first one was to crawl Lexis Nexis slowly to avoid to be ban from using the service. The second one was how to crawl the website. The first problem was easily solved, I decided to crawl no more than one month of data per day. So I needed roughly two months to get 63 months of data. The technical problem was more interesting. The first thing to consider is that I needed to be able to perform a lot of things with my robot: login, search for archives of each day by filling multiple forms, clicking on various links\ldots At first sight I though I would use Perl WWW::Mechanize\footnote{\url{http://search.cpan.org/dist/WWW-Mechanize/}} or Python Mechanize\footnote{\url{http://wwwsearch.sourceforge.net/mechanize/}}. Unfortunately none of them was able to handle the Javascript stuff (and Lexis Nexis heavily rely on the ability to execute Javascript). In consequence I quickly look on the Internet to find an alternative, and I found Watir\footnote{\url{http://watir.com/}}. Watir is described by Wikipedia\footnote{\url{http://en.wikipedia.org/wiki/Watir}} like that: ``\emph{Web Application Testing in Ruby (or Watir, [\ldots]) is a toolkit used to automate browser-based tests during web application development.}''. So even if it's primary designed for testing purposes we can use it to crawl a website. In fact Watir was the chosen solution because it was simple, and there wasn't any better alternative. Using Watir can be summed up in two steps:
+			However searching for archives for more than a few days is a tedious task. In consequence I developed a web crawler which browse Lexis Nexis automatically and download the data. Though, there was a few considerations to take into account. The first one was to crawl Lexis Nexis slowly to avoid to be ban from using the service. The second one was how to crawl the website. The first problem was easily solved, I decided to crawl no more than one month of data per day. So I needed roughly two months to get 63 months of data. The technical problem was more interesting. The first thing to consider is that I needed to be able to perform a lot of things with my robot: login, search for archives of each day by filling multiple forms, clicking on various links\ldots At first sight I though I would use Perl WWW::Mechanize\footnote{\url{http://search.cpan.org/dist/WWW-Mechanize/}} or Python Mechanize\footnote{\url{http://wwwsearch.sourceforge.net/mechanize/}}. Unfortunately none of them was able to handle the Javascript stuff (and Lexis Nexis heavily rely on the ability to execute Javascript). In consequence I quickly look on the Internet to find an alternative, and I found Watir\footnote{\url{http://watir.com/}}. Watir is described by Wikipedia\footnote{\url{http://en.wikipedia.org/wiki/Watir}} like that: ``\emph{Web Application Testing in Ruby (or Watir, [\ldots]) is a toolkit used to automate browser-based tests during web application development.}''. So even if it's primary designed for testing purposes we can use it to crawl a website. In fact Watir was the chosen solution because it was simple, and there was not any better alternative. Using Watir can be summed up in two steps:
 			\begin{enumerate}
 				\item Find the correct HTML\footnote{HyperText Markup Language.}/DOM\footnote{Document Object Model.} element.
 				\item Set it to the right value and/or click it.
@@ -86,7 +99,7 @@ def login(url, user='', pass='')
   # before going to login
   # page, so once it's filled user can "go away"
   # obviously if login details are 
-  # provided to the method, doesn't ask
+  # provided to the method, does not ask
   while user.empty? or pass.empty?
     puts 'Username:'
     user = gets.chomp
@@ -214,12 +227,12 @@ def words(s):
 				volume\_return(day) &=& \ln\left(\frac{volume\_freq(day)}{volume\_freq(previous\_day(day))}\right)\label{vreturn}
 			\end{eqnarray}
 			
-			Finally I computed the 1 month volatility of the same variables which is the standard deviation of them over a 30 day period.
+			Finally I computed the 1 month volatility of the same variables which is the standard deviation of their returns over a 30 day period.
 			
 	\chapter{Experiments and Evaluation}
 		\section{Graph analysis}
 		
-			To get an insight of the data the first thing I did was to plot the data against time (see figures ~\ref{cac}, ~\ref{pos}, ~\ref{neg} and ~\ref{posdivneg}). It worth to be noted that the plots of returns and volatility doesn't show anything interesting --except that the magnitude of both returns and volatility of the CAC40 is higher since the end of 2008-- that's why they're not included here.
+			To get an insight of the data the first thing I did was to plot the data against time (see figures ~\ref{cac}, ~\ref{pos}, ~\ref{neg} and ~\ref{posdivneg}). It worth to be noted that the plots of returns and volatility does not show anything interesting --except that the magnitude of both returns and volatility of the CAC40 is higher since the end of 2008-- that's why they are not included here.
 
 			\begin{figure}[h!]
 				\caption{CAC40 close over time\label{cac}}
@@ -276,7 +289,7 @@ def words(s):
 			
 			This clearly shows that the sentiments and the CAC40 follows some trends during \textbf{the same periods} and \textbf{may be somewhat related}. This is leaves us two questions: does CAC40 trends follows sentiments trends (or the opposite)? Can we draw the same conclusion on a daily basis (instead of a four years time frame)?
 			
-			Another interesting thing to visualize is the distribution of return (see figures ~\ref{dist_cac}, ~\ref{dist_vol}, ~\ref{dist_sentiments}). Even if it proves nothing the fact that all distributions are the same (roughly normal) shows that our hypothesis remains plausible. If the distributions have been totally different, the hypothesis would have been wrong.
+			Another interesting thing to visualize is the distribution of return (see figures ~\ref{dist_cac}, ~\ref{dist_vol}, ~\ref{dist_sentiments}). Even if it proves nothing the fact that all distributions are the same shows that our hypothesis remains plausible. If the distributions have been totally different, the hypothesis would have been wrong.
 
 			\begin{figure}[H]
 				\caption{Distribution of the CAC40 close returns\label{dist_cac}}
@@ -299,7 +312,7 @@ def words(s):
 			
 			To do this I used the Pearson correlation\footnote{\url{http://en.wikipedia.org/wiki/Pearson_product-moment_correlation_coefficient}}. Pearson correlation is a mathematical tool which try to show if there's a correlation between two datasets. It gives us a \emph{correlation coefficient} in the range $[-1, 1]$. If the value of $|correlation\ coefficient|$ is close to 1 this means that it exists a strong correlation between the two datasets, a value close to 0 means that there's no correlation.
 			
-			Correlation coefficients between returns of sentiments, CAC40 close and CAC40 volume were calculated. I computed them on the same day or with an interval of one day (to see if news forecasts the CAC40 or the inverse). The results are shown in the table ~\ref{pearson_cac} and ~\ref{pearson_volume}. We can see that all the coefficients are within the interval $[-0.1, 0.1]$ which means that we can't show that there's a correlation between the returns of sentiments and the returns of the CAC40 or the returns of the CAC40 volume.
+			Correlation coefficients between returns of sentiments, CAC40 close and CAC40 volume were calculated. I computed them on the same day or with an interval of one day (to see if news forecasts the CAC40 or the inverse). The results are shown in the table ~\ref{pearson_cac} and ~\ref{pearson_volume}. We can see that all the coefficients are within the interval $[-0.1, 0.1]$ which means that we cannot show that there's a correlation between the returns of sentiments and the returns of the CAC40 or the returns of the CAC40 volume.
 			
 			\begin{table}
 			\begin{tabular}{|c | c | c | c|}
@@ -434,5 +447,8 @@ def words(s):
 		% - 7? try with other value in [1,15]
 		% - non linear correlation
 		% - nltk
+		% - global world? only french news? maybe not
 		
+	\bibliographystyle{plain}
+	\bibliography{biblio}		
 \end{document}
