@@ -5,6 +5,7 @@
 \usepackage{amssymb}
 \usepackage{array}
 \usepackage{color}
+\usepackage{float}
 \usepackage[margin=2.75cm]{geometry}
 \usepackage{graphicx}
 \usepackage{hyperref}
@@ -220,22 +221,22 @@ def words(s):
 		
 			To get an insight of the data the first thing I did was to plot the data against time (see figures ~\ref{cac}, ~\ref{pos}, ~\ref{neg} and ~\ref{posdivneg}). It worth to be noted that the plots of returns and volatility doesn't show anything interesting --except that the magnitude of both returns and volatility of the CAC40 is higher since the end of 2008-- that's why they're not included here.
 
-			\begin{figure}[h]
+			\begin{figure}[h!]
 				\caption{CAC40 close over time\label{cac}}
 				\includegraphics{plots/time/cac.png}
 			\end{figure}
 
-			\begin{figure}[h]
+			\begin{figure}[h!]
 				\caption{Positive sentiments frequency over time\label{pos}}
 				\includegraphics{plots/time/pos.png}
 			\end{figure}
 	
-			\begin{figure}[h]
+			\begin{figure}[h!]
 				\caption{Negative sentiments frequency over time\label{neg}}
 				\includegraphics{plots/time/neg.png}
 			\end{figure}
 			
-			\begin{figure}[h]
+			\begin{figure}[h!]
 				\caption{$\dfrac{positive\ sentiments\ frequency}{negative\ sentiments\ frequency}$ over time\label{posdivneg}}
 				\includegraphics{plots/time/posdivneg.png}
 			\end{figure}
@@ -274,14 +275,31 @@ def words(s):
 			\end{center}
 			
 			This clearly shows that the sentiments and the CAC40 follows some trends during \textbf{the same periods} and \textbf{may be somewhat related}. This is leaves us two questions: does CAC40 trends follows sentiments trends (or the opposite)? Can we draw the same conclusion on a daily basis (instead of a four years time frame)?
+			
+			Another interesting thing to visualize is the distribution of return (see figures ~\ref{dist_cac}, ~\ref{dist_vol}, ~\ref{dist_sentiments}). Even if it proves nothing the fact that all distributions are the same (roughly normal) shows that our hypothesis remains plausible. If the distributions have been totally different, the hypothesis would have been wrong.
 
+			\begin{figure}[H]
+				\caption{Distribution of the CAC40 close returns\label{dist_cac}}
+				\includegraphics{plots/dists/close_return.png}
+			\end{figure}
+
+			\begin{figure}[H]
+				\caption{Distribution of the CAC40 volume returns\label{dist_vol}}
+				\includegraphics{plots/dists/volume_return.png}
+			\end{figure}
+
+			\begin{figure}[H]
+				\caption{Distribution of the sentiments returns\label{dist_sentiments}}
+				\includegraphics{plots/dists/pos_neg_posneg_returns_dist.png}
+			\end{figure}
+			
 		\section{Correlation between news and the CAC}
 
 			The primary goal of this project was to show if there's a correlation between sentiments expressed in economic news and the daily changes of the CAC40. It's possible to search a correlation between the returns or the volatily of the CAC/the sentiments.
 			
 			To do this I used the Pearson correlation\footnote{\url{http://en.wikipedia.org/wiki/Pearson_product-moment_correlation_coefficient}}. Pearson correlation is a mathematical tool which try to show if there's a correlation between two datasets. It gives us a \emph{correlation coefficient} in the range $[-1, 1]$. If the value of $|correlation\ coefficient|$ is close to 1 this means that it exists a strong correlation between the two datasets, a value close to 0 means that there's no correlation.
 			
-			Correlation coefficients between returns of sentiments, CAC40 close and CAC40 volume were calculated. I computed them on the same day or with an interval of one day (to see if news forecasts the CAC40 or the inverse). The results are show in the table ~\ref{pearson_cac} and ~\ref{pearson_volume}. We can see that all the coefficients are within the interval $[-0.1, 0.1]$ which means that we can't show that there's a correlation between the returns of sentiments and the returns of the CAC40 or the returns of the CAC40 volume.
+			Correlation coefficients between returns of sentiments, CAC40 close and CAC40 volume were calculated. I computed them on the same day or with an interval of one day (to see if news forecasts the CAC40 or the inverse). The results are shown in the table ~\ref{pearson_cac} and ~\ref{pearson_volume}. We can see that all the coefficients are within the interval $[-0.1, 0.1]$ which means that we can't show that there's a correlation between the returns of sentiments and the returns of the CAC40 or the returns of the CAC40 volume.
 			
 			\begin{table}
 			\begin{tabular}{|c | c | c | c|}
@@ -320,7 +338,7 @@ def words(s):
 				\item Between sentiments and CAC40 close, table ~\ref{pearson_vol_cac}.
 				\item Between sentiments and CAC40 volume, table ~\ref{pearson_vol_vol}.
 			\end{itemize}
-			However all the correlation coefficient are in the interval $[-0.21, 0.32]$. This is better than the returns correlations, but this is still low.
+			However all the correlation coefficients are in the interval $[-0.21, 0.32]$. This is better than the returns correlations, but this is still low.
 
 			\begin{table}
 			\begin{center}
@@ -415,5 +433,6 @@ def words(s):
 		% - nn?
 		% - 7? try with other value in [1,15]
 		% - non linear correlation
+		% - nltk
 		
 \end{document}
