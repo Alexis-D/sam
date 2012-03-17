@@ -59,18 +59,51 @@
 	
 	\chapter{Literature Review}
 		
-		In the past many authors suggested that the sentiments about a topic expressed in media may influence the ``actors'' of this topics. Examples of such studies include different topics like:
+		In the past many studies have shown that sentiments expressed by media on a specific topic have influence on the people interested in it. Examples of such studies include different topics like:
 		
 		\begin{itemize}
 			\item Politics: sentiments may influence electors (e.g. K. Ahmad et al. \cite{ahmad11})
 			\item Economy: sentiments may influence traders (e.g. P. Tetlock \cite{tetlock07})
 		\end{itemize}
 		
-		These sentiments can come from several sources:
+		So the first question is: what are sentiments? Sentiments are a way to express opinions and are subjective. For instance in this phrase:
+		
+		\begin{center}
+			\emph{This was a {\color{green}great} show.}
+		\end{center}
+		
+		``{\color{green}great}'' denotes a \emph{positive} sentiment while in the following phrase:
+		
+		\begin{center}
+			\emph{This is a {\color{red}disaster} for the company\ldots Now it will probably go {\color{red}bankrupt}.}
+		\end{center}
+		
+		``{\color{red}disaster}'' and ``{\color{red}bankrupt}'' show a \emph{negative} sentiment. It is also important to note that sentiments are not facts. For example:
+		
+		\begin{center}
+			\emph{He ran the 100m in 9.58 seconds.}
+		\end{center} is a fact while
+		
+		\begin{center}
+			\emph{He is the best sprinter ever.}
+		\end{center}
+		
+		expresses a (positive) sentiment.
+		
+		We should also note that sentiments may be hard to quantify for a computer. For instance in the phrase:
+		
+		\begin{center}
+			\emph{This movie is not so bad.}
+		\end{center}
+		
+		a computer will consider it negative (because of presence of the word ``bad'') or positive if the program is clever enough to handle negations\footnote{More advanced method for extracting sentiments may produce different results, for instance \href{http://text-processing.com/demo/sentiment/}{Python NLTK} estimates that this phrase has a positive score of 0.1/1 and a negative one of 0.9/1.}. On the other hand an human has not this manichean vision of the world and would not flag this phrase as totally positive/negative. In fact it is hard to evaluate this kind of phrase without further context.
+		
+		Now we know what are sentiments, where do they come from? In fact they are everywhere: each time we give our opinion about some subject we probably express sentiments. However to gather enough sentiments to be able to study them, the easiest way is to find them in the media, for instance:
 		\begin{itemize}
 			\item News (e.g. K. Ahmad et al. \cite{ahmad11})
 			\item Blogs (e.g. K. Ahmad et al. \cite{ahmad11})
 			\item Social Networks (e.g. A. Pak et al. \cite{pak10})
+			\item Review Websites (e.g. K. Yessenov and S. Misailovi\'c \cite{yessenov09})
 		\end{itemize}
 		
 		In this study we will focus on sentiments expressed by economic newspapers, because we are interested in the impact of sentiments on stocks markets. In order to build an index of sentiments that varies over time and which not depends on the volume of news for a given day we compute the sentiments frequencies for each day. Of course we distinguish two main categories of sentiments: the positive ones and the negatives one.
@@ -320,7 +353,7 @@ def words(s):
 			Correlation coefficients between returns of sentiments, CAC40 close and CAC40 volume were calculated. I computed them on the same day or with an interval of one day (to see if news forecasts the CAC40 or the inverse). The results are shown in the table ~\ref{pearson_cac} and ~\ref{pearson_volume}. We can see that all the coefficients are within the interval $[-0.1, 0.1]$ which means that we cannot show that there's a correlation between the returns of sentiments and the returns of the CAC40 or the returns of the CAC40 volume.
 			
 			\begin{table}
-			\begin{tabular}{|c | c | c | c|}
+			\begin{tabular}{|c || c | c | c|}
 				\hline
 				Sentiments date and CAC40 date & Positive sentiments & Negative sentiments & $\dfrac{Positive}{Negative}$\\
 				\hline
@@ -336,7 +369,7 @@ def words(s):
 			\end{table}
 
 			\begin{table}
-			\begin{tabular}{|c | c | c | c|}
+			\begin{tabular}{|c || c | c | c|}
 				\hline
 				Sentiments date and CAC40 date & Positive sentiments & Negative sentiments & $\dfrac{Positive}{Negative}$\\
 				\hline
@@ -405,7 +438,7 @@ def words(s):
 			Finally to test the validity of the hypothesis I computed various correlations between sentiments and $\varepsilon(t)$. The results can be seen in the table ~\ref{pearson_cac_ar}. Again the correlations coefficients are low (in the interval $[-0.1, 0.3]$) \emph{but} they are higher than the direct correlation between returns. So even if the correlation is far from perfect it looks like this hypothesis is better. Obviously they are numerous factors distincts from sentiments which occurs in the value of $\varepsilon(t)$, that's why the correlation is low.
 
 			\begin{table}
-			\begin{tabular}{|c | c | c | c|}
+			\begin{tabular}{|c || c | c | c|}
 				\hline
 				Sentiments date and CAC40 date & Positive sentiments & Negative sentiments & $\dfrac{Positive}{Negative}$\\
 				\hline
@@ -429,7 +462,7 @@ def words(s):
 			I applied the same process to find the $\alpha_{v_i}$ and then I computed the correlations coefficient between sentiments and $\varepsilon_v(t)$ (see table ~\ref{pearson_cac_vol_ar}). We can draw the same conclusions as for the close data: the coefficients are still low (in $[-0.24, 0.30]$) \emph{but} they are higher than the simple correlation between returns.
 
 			\begin{table}
-			\begin{tabular}{|c | c | c | c|}
+			\begin{tabular}{|c || c | c | c|}
 				\hline
 				Sentiments date and CAC40 date & Positive sentiments & Negative sentiments & $\dfrac{Positive}{Negative}$\\
 				\hline
@@ -455,5 +488,5 @@ def words(s):
 		% - global world? only french news? maybe not
 		
 	\bibliographystyle{plain}
-	\bibliography{biblio}		
+	\bibliography{biblio}
 \end{document}
