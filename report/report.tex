@@ -30,74 +30,74 @@
 
 \begin{document}
 	\onehalfspace
-	
+
 	\title{Sentiment Analysis, News \amp{} CAC40}
 	\date{\today}
 	\author{Alexis Daboville}
-	
+
 	\maketitle
-	
+
 	\begin{abstract}
 		\ldots to be written \ldots
 	\end{abstract}
-	
+
 	\pagenumbering{roman}
 	\pagestyle{headings}
 	\tableofcontents
 	\listoffigures
 	\listoftables
-	
+
 	\newpage
-	
+
 	\chapter*{Acknowledgements}
-	
+
 	\chapter{Introduction}
 		% what? sentiment analysis? CAC?
 		% why ?
 		% how ?
 		% hypothesis
-	
+
 	\chapter{Literature Review}
-		
+
 		In the past many studies have shown that sentiments expressed by media on a specific topic have influence on the people interested in it. Examples of such studies include different topics like:
-		
+
 		\begin{itemize}
 			\item Politics: sentiments may influence electors (e.g. K. Ahmad et al. \cite{ahmad11})
 			\item Economy: sentiments may influence traders (e.g. P. Tetlock \cite{tetlock07})
 		\end{itemize}
-		
+
 		So the first question is: what are sentiments? Sentiments are a way to express opinions and are subjective. For instance in this phrase:
-		
+
 		\begin{center}
 			\emph{This was a {\color{green}great} show.}
 		\end{center}
-		
+
 		``{\color{green}great}'' denotes a \emph{positive} sentiment while in the following phrase:
-		
+
 		\begin{center}
 			\emph{This is a {\color{red}disaster} for the company\ldots Now it will probably go {\color{red}bankrupt}.}
 		\end{center}
-		
+
 		``{\color{red}disaster}'' and ``{\color{red}bankrupt}'' show a \emph{negative} sentiment. It is also important to note that sentiments are not facts. For example:
-		
+
 		\begin{center}
 			\emph{He ran the 100m in 9.58 seconds.}
 		\end{center} is a fact while
-		
+
 		\begin{center}
 			\emph{He is the best sprinter ever.}
 		\end{center}
-		
+
 		expresses a (positive) sentiment.
-		
+
 		We should also note that sentiments may be hard to quantify for a computer. For instance if we use a program that counts the number of occurrences of positive/negative words, the following phrase:
-		
+
 		\begin{center}
 			\emph{This movie is not bad.}
 		\end{center}
-		
+
 		will probably be classified as negative (because of presence of the word ``bad'') or positive if the program is clever enough to handle negations\footnote{More advanced method for extracting sentiments may produce better and/or different results, for instance \href{http://text-processing.com/demo/sentiment/}{Python NLTK} estimates that this phrase has a positive score of 0.1/1 and a negative one of 0.9/1.}. On the other hand an human has not this manichean vision of the world and would not flag this phrase as totally positive/negative. In fact it is hard to evaluate this kind of phrase without further context.
-		
+
 		Now we know what are sentiments, where do they come from? In fact they are everywhere: each time we give our opinion about some subject we probably express sentiments. However to gather enough sentiments to be able to study them, the easiest way is to find them in the media, for instance:
 		\begin{itemize}
 			\item News (e.g. R. Remus et al. \cite{remus09})
@@ -105,40 +105,40 @@
 			\item Social Networks (e.g. A. Pak et al. \cite{pak10})
 			\item Review Websites (e.g. K. Yessenov and S. Misailovi\'c \cite{yessenov09})
 		\end{itemize}
-		
+
 		In this study we will focus on sentiments expressed by economic newspapers, because we are interested in the impact of sentiments on stocks markets. In order to build an index of sentiments that varies over time and which not depends on the volume of news for a given day we compute the sentiments frequencies for each day. Of course we distinguish two main categories of sentiments: the positive ones and the negatives one.
-		
+
 		The studied market will be the CAC40. This is the main French stock index. It's composed by 40 of the most important French companies. Each company is pondered by a weight so the biggest company have more importance in the overall index. The most important companies being Total (oil), Sanofi (pharmaceuticals) and BNP Paribas (banking). The full list of the companies constituent the index can be found \href{http://en.wikipedia.org/wiki/CAC40}{here}. The method to compute index value can be found \href{http://www.euronext.com/fic/000/050/871/508718.pdf}{here}.
 
 		Finally in this study will span from January 1\st, 2004 to March 31\st, 2009. The CAC40 began at 3596.8 points and went up until June 1\st 2007 at a maximum of 6168.15 points. Then it went down until its minimum on the March 3\rd 2009 at 2519.29 points.
-		
+
 	\chapter{Methodology}
 		\section{Getting the news}
-		
+
 			There was a few options to consider for getting news data. The first one was to know where to get the data, the second was how to get it.
-			
+
 			In 2009, Stéphane Kazmierczak \cite{kazmierczak08} did similar experiments and got his data by crawling the website Investir.fr\footnote{\url{http://www.investir.fr/}}. Investir.fr is a website about economy and stock markets. The problem is that there are two downsides using this approach:
 			\begin{itemize}
 				\item All the data comes from a single source.
 				\item Currently most of economics news website have paid archives (which prevents me from crawling them).
 			\end{itemize}
-			
+
 			The solution proposed by Khurshid Ahmad was to get the data from Lexis Nexis\footnote{\url{http://www.lexisnexis.com/en-us/home.page}}. Lexis Nexis is a platform which has numerous archives of newspapers (including French economic newspapers). Fortunately Trinity College has an agreement with them which allow Trinity students to use the service. Using this platform solved the two problems. In fact I was able to get data from multiple newspapers, and the Lexis Nexis website is ``crawlable''.
-			
+
 			However searching for archives for more than a few days is a tedious task. In consequence I developed a web crawler which browse Lexis Nexis automatically and download the data. Though, there was a few considerations to take into account. The first one was to crawl Lexis Nexis slowly to avoid to be ban from using the service. The second one was how to crawl the website. The first problem was easily solved, I decided to crawl no more than one month of data per day. So I needed roughly two months to get 63 months of data. The technical problem was more interesting. The first thing to consider is that I needed to be able to perform a lot of things with my robot: login, search for archives of each day by filling multiple forms, clicking on various links\ldots At first sight I though I would use Perl WWW::Mechanize\footnote{\url{http://search.cpan.org/dist/WWW-Mechanize/}} or Python Mechanize\footnote{\url{http://wwwsearch.sourceforge.net/mechanize/}}. Unfortunately none of them was able to handle the Javascript stuff (and Lexis Nexis heavily rely on the ability to execute Javascript). In consequence I quickly look on the Internet to find an alternative, and I found Watir\footnote{\url{http://watir.com/}}. Watir is described by Wikipedia\footnote{\url{http://en.wikipedia.org/wiki/Watir}} like that: ``\emph{Web Application Testing in Ruby (or Watir, [\ldots]) is a toolkit used to automate browser-based tests during web application development.}''. So even if it's primary designed for testing purposes we can use it to crawl a website. In fact Watir was the chosen solution because it was simple, and there was not any better alternative. Using Watir can be summed up in two steps:
 			\begin{enumerate}
 				\item Find the correct HTML\footnote{HyperText Markup Language.}/DOM\footnote{Document Object Model.} element.
 				\item Set it to the right value and/or click it.
 			\end{enumerate}
-			
+
 			For instance here's the method (part of the \lstinline!LexisNexisCrawler! class, in the file \lstinline!tools/lncrawler.rb!) that log the user in:
-			
+
 			\begin{lstlisting}[language=Ruby, basicstyle=]
 def login(url, user='', pass='')
   # ask for login details
   # before going to login
   # page, so once it's filled user can "go away"
-  # obviously if login details are 
+  # obviously if login details are
   # provided to the method, does not ask
   while user.empty? or pass.empty?
     puts 'Username:'
@@ -153,7 +153,7 @@ def login(url, user='', pass='')
   @browser.text_field(:name => 'user').set(user)
   @browser.text_field(:name => 'pass').set(pass)
   @browser.button(:name => 'Submit2').click
-                                                                                                 
+
   # accept term & conditions
   @browser.link(:href => /submitterms\.do/).click
 
@@ -161,7 +161,7 @@ def login(url, user='', pass='')
   @searchUrl = @browser.link(:text => 'Search').href
 end
 			\end{lstlisting}
-			
+
 			Using the crawler developed with Watir I was able to fetch 560,000+ news. The time frame spans from January 1\st, 2004 to March 31\st, 2009. Also the data was collected from several French economic newspapers or websites:
 			\begin{itemize}
 				% + footnote with url to each website?
@@ -175,53 +175,53 @@ end
 				\item La Tribune
 				\item LaTribune.fr
 			\end{itemize}
-			
+
 		\section{Getting the CAC40 data}
-		
+
 			The CAC40 data was simply downloaded from Yahoo! Finance\footnote{\url{http://finance.yahoo.com/q/hp?s=^FCHI+Historical+Prices}} which provides all the data I needed in a handy  CSV file.
-		
+
 		\section{The dictionaries}
-		
+
 			To analyse the sentiments expressed in the news I also needed two dictionaries. The first one would contain the positive or negative words, and the second would contain the words related to economy.
-			
+
 			For the first dictionary, the idea used was to merge two things:
 			\begin{itemize}
 				\item The General Inquirer (GI) Dictionary\footnote{\url{http://www.wjh.harvard.edu/~inquirer/}} which is the reference dictionary for sentiment analysis. It classifies hundreds of words in several categories like strong or weak, positive or negative, active or passive\ldots Here I just needed the positive and negative categories.
 				\item The most common words in economic news.
 			\end{itemize}
-			
+
 			The GI dictionary was translated in French by Stéphane Kazmierczak, so I used it as a base.
-			
+
 			The most commons words were simply found using a little Python script. It just splitted all text in different words (in Python terms it means \lstinline!re.findall(r'\w+', text, re.UNICODE)!), and finally just use \lstinline!collections.Counter! and the \lstinline!.most_common()! method to find the most commons words.
-			
+
 			I merged the two dictionaries by hand because I wanted to add a few improvements over the Kazmierczak's one. The first thing was to only keep words that were often used in French. The second and more important improvement was to allow jokers at the end of the words. For instance instead of storing the words \emph{augmentation}, \emph{augmenter}, \emph{augmente} and so on I used a * as a joker and I just stored \emph{augment*}, so all words which have the prefix \emph{augment} are matched.
-			
+
 			The second dictionary was easy to build, I just translated (some of)\footnote{Only the ones that were translatable by a single word in French.} the economic words listed on InvestorWords.com\footnote{\url{http://www.investorwords.com/cgi-bin/bysubject.cgi?8}}.
-			
+
 			Then when I needed to lookup if a word is in one of the dictionary I used tries\footnote{Also known as prefix tree, see \url{http://en.wikipedia.org/wiki/Trie} for more informations.}, so the lookup was fast.
-			
+
 		\section{Processing the data}
-		
+
 			\emph{\color{red}I'm not sure I'll leave this here (3.4 \& 3.5): the definitions of sentiment frequencies/returns should probably go in the 1\st section\ldots}
-		
+
 			Once I had all the news the first thing to do was to reformat them. For example I had to remove useless metadata and normalize the dates (which were sometimes in French and sometimes in English\ldots). This work was done with a little Python script (\lstinline!tools/format.py!).
-			
+
 			Once it was done I was able to perform calculation over the corpus. For each day I computed the number of positive words, negative words and the total number of words, (see equations ~\ref{pwords}, ~\ref{nwords} and ~\ref{twords}).
-			
+
 			\begin{eqnarray}
-			words(day) &=& \textrm{A set of all words in the news of day}\\
-			\\			
-			positive\_set &=& positive\_words\_set - economic\_words\_set\\
-			positive\_words(day) &=& \sum_{w \textrm{ in } words(day)} (1\textrm{ if }w \textrm{ in } positive\_set \textrm{ otherwise } 0)\label{pwords}\\
-			\\
-			negative\_set &=& negative\ words\ set - economic\ words\ set\\
-			negative\_words(day) &=& \sum_{w \textrm{ in } words(day)} (1\textrm{ if }w \textrm{ in } negative\_set \textrm{ otherwise } 0)\label{nwords}\\
-			\\
+			words(day) &=& \textrm{A list of all words in the news of day}\nonumber\\
+			\nonumber\\
+			positive\_set &=& positive\_words\_set - economic\_words\_set\nonumber\\
+			positive\_words(day) &=& \sum_{w \textrm{ in } words(day)} \begin{cases}1 & \textrm{ if }w \textrm{ in } positive\_set\\ 0 & \mbox{ otherwise }\end{cases}\label{pwords}\\
+			\nonumber\\
+			negative\_set &=& negative\ words\ set - economic\ words\ set\nonumber\\
+			negative\_words(day) &=& \sum_{w \textrm{ in } words(day)} \begin{cases}1 & \textrm{ if }w \textrm{ in } negative\_set\\ 0 & \mbox{ otherwise }\end{cases}\label{nwords}\\
+			\nonumber\\
 			number\_of\_words(day) &=& length(words(day))\label{twords}
 			\end{eqnarray}
-			
+
 			For better results, the function \lstinline!words(s)! splitted news using a regex. Then I used a function to remove all diacritical signs (so the words were kind of ``normalized'', for instance the word \emph{éléphant} is transformed to \emph{elephant}). This is done by the following Python code:
-			
+
 			\begin{lstlisting}[language=Python]
 def normalize(w):
     """Convert an UTF-8 encoded string to a pure ASCII one.
@@ -240,38 +240,38 @@ def words(s):
     			\end{lstlisting}
 
 				The final step of processing the data was to merge the CSV produced by the script which count the words (\lstinline!tools/count.py!) and the CAC40 data into another CSV file. This was done by another Python script (\lstinline!tools/merge.py!). During this step I also computed the frequencies of positive and negative words (equations ~\ref{pfreq} and ~\ref{nfreq}).
-			
+
 			\begin{eqnarray}
 				positive\_freq(day) &=& \frac{length(positive\_words(day))}{number\_of\_words(day)}\label{pfreq}\\
 				negative\_freq(day) &=& \frac{length(negative\_words(day))}{number\_of\_words(day)}\label{nfreq}
 			\end{eqnarray}
-			
+
 			Usually the sentiment frequencies are defined as the average of the sentiment frequency of each news for a given day. I decided to do it differently because doing it this way gives \emph{less weight} to short stories.
-			
+
 		\section{Analysis of the data}
-			
+
 			The analysis of the data was done with LibreOffice Calc\footnote{\url{http://www.libreoffice.org/features/calc/}} which is a free and open source alternative to Microsoft Excel\footnote{\url{http://office.microsoft.com/en-us/excel/}}. To use it I just needed to import the  CSV file produced at the merge step. Then I was able to use the common functions like: \lstinline!AVERAGE!, \lstinline!STDEV!, \lstinline!PEARSON!, etc).
-			
+
 			Using LibreOffice Calc I performed several computations. I began by plotting the $positive\_freq(day)$, $negative\_freq(day)$, $close\_cac40(day)$ and $volume\_cac40(day)$. I also computed the mean and the standard deviation of each of these variable. Then I computed their daily logarithmic return. The logarithmic return is defined as equation ~\ref{return} (Wikipedia\footnote{\url{http://en.wikipedia.org/wiki/Rate_of_return\#Logarithmic_or_continuously_compounded_return}}).
-			
+
 			\begin{eqnarray}
 				return = \ln\frac{V_f}{V_i}\label{return}
 			\end{eqnarray}
-			
+
 			Where $V_f$ is the final value investment and $V_i$ the initial value of investment. In order to compute daily returns we use equations ~\ref{preturn}, ~\ref{nreturn}, ~\ref{creturn} and ~\ref{vreturn}.
-			
+
 			\begin{eqnarray}
 				positive\_return(day) &=& \ln\left(\frac{positive\_freq(day)}{positive\_freq(previous\_day(day))}\right)\label{preturn}\\
 				negative\_return(day) &=& \ln\left(\frac{negative\_freq(day)}{negative\_freq(previous\_day(day))}\right)\label{nreturn}\\
 				close\_return(day) &=& \ln\left(\frac{close\_freq(day)}{close\_freq(previous\_day(day))}\right)\label{creturn}\\
 				volume\_return(day) &=& \ln\left(\frac{volume\_freq(day)}{volume\_freq(previous\_day(day))}\right)\label{vreturn}
 			\end{eqnarray}
-			
+
 			Finally I computed the 1 month volatility of the same variables which is the standard deviation of their returns over a 30 day period.
-			
+
 	\chapter{Experiments and Evaluation}
 		\section{Graph analysis}
-		
+
 			To get an insight of the data the first thing I did was to plot the data against time (see figures ~\ref{cac}, ~\ref{pos}, ~\ref{neg} and ~\ref{posdivneg}). It worth to be noted that the plots of returns and volatility does not show anything interesting --except that the magnitude of both returns and volatility of the CAC40 is higher since the end of 2008-- that's why they are not included here.
 
 			\begin{figure}[h!]
@@ -283,17 +283,17 @@ def words(s):
 				\caption{Positive sentiments frequency over time\label{pos}}
 				\includegraphics{plots/time/pos.png}
 			\end{figure}
-	
+
 			\begin{figure}[h!]
 				\caption{Negative sentiments frequency over time\label{neg}}
 				\includegraphics{plots/time/neg.png}
 			\end{figure}
-			
+
 			\begin{figure}[h!]
 				\caption{$\dfrac{positive\ sentiments\ frequency}{negative\ sentiments\ frequency}$ over time\label{posdivneg}}
 				\includegraphics{plots/time/posdivneg.png}
 			\end{figure}
-			
+
 			The first thing to notice is that all the graph can be divided in the same periods:
 			\begin{itemize}
 				\item Before mid-2007
@@ -326,9 +326,9 @@ def words(s):
 			\caption{CAC40 and sentiments trends\label{trends}}
 			\end{table}
 			\end{center}
-			
+
 			This clearly shows that the sentiments and the CAC40 follows some trends during \textbf{the same periods} and \textbf{may be somewhat related}. This is leaves us two questions: does CAC40 trends follows sentiments trends (or the opposite)? Can we draw the same conclusion on a daily basis (instead of a four years time frame)?
-			
+
 			Another interesting thing to visualize is the distribution of return (see figures ~\ref{dist_cac}, ~\ref{dist_vol}, ~\ref{dist_sentiments}). Even if it proves nothing the fact that all distributions are the same shows that our hypothesis remains plausible. If the distributions have been totally different, the hypothesis would have been wrong.
 
 			\begin{figure}[H]
@@ -345,15 +345,15 @@ def words(s):
 				\caption{Distribution of the sentiments returns\label{dist_sentiments}}
 				\includegraphics{plots/dists/pos_neg_posneg_returns_dist.png}
 			\end{figure}
-			
+
 		\section{Correlation between sentiments and the CAC40}
 
 			The primary goal of this project was to show if there's a correlation between sentiments expressed in economic news and the daily changes of the CAC40. It's possible to search a correlation between the returns or the volatily of the CAC/the sentiments.
-			
+
 			To do this I used the Pearson correlation\footnote{\url{http://en.wikipedia.org/wiki/Pearson_product-moment_correlation_coefficient}}. Pearson correlation is a mathematical tool which try to show if there's a correlation between two datasets. It gives us a \emph{correlation coefficient} in the range $[-1, 1]$. If the value of $|correlation\ coefficient|$ is close to 1 this means that it exists a strong correlation between the two datasets, a value close to 0 means that there's no correlation.
-			
+
 			Correlation coefficients between returns of sentiments, CAC40 close and CAC40 volume were calculated. I computed them on the same day or with an interval of one day (to see if news forecasts the CAC40 or the inverse). The results are shown in the table ~\ref{pearson_cac} and ~\ref{pearson_volume}. We can see that all the coefficients are within the interval $[-0.1, 0.1]$ which means that we cannot show that there's a correlation between the returns of sentiments and the returns of the CAC40 or the returns of the CAC40 volume.
-			
+
 			\begin{table}
 			\begin{tabular}{|c || c | c | c|}
 				\hline
@@ -366,7 +366,7 @@ def words(s):
 				next(day) and day & 0.0491 & 0.0305 & 0.0089\\
 				\hline
 			\end{tabular}
-			
+
 			\caption{Pearson correlation between sentiments returns and CAC40 returns.\label{pearson_cac}}
 			\end{table}
 
@@ -382,7 +382,7 @@ def words(s):
 				next(day) and day & 0.0936 & 0.0473 & 0.0247\\
 				\hline
 			\end{tabular}
-			
+
 			\caption{Pearson correlation between sentiments returns and CAC40 volume returns.\label{pearson_volume}}
 			\end{table}
 
@@ -403,7 +403,7 @@ def words(s):
 				\hline
 			\end{tabular}
 			\end{center}
-			
+
 			\caption{Pearson correlation between sentiments volatility and CAC40 volatility (over 30 days).\label{pearson_vol_cac}}
 			\end{table}
 
@@ -417,7 +417,7 @@ def words(s):
 				\hline
 			\end{tabular}
 			\end{center}
-			
+
 			\caption{Pearson correlation between sentiments volatility and CAC40 volume volatility (over 30 days).\label{pearson_vol_vol}}
 			\end{table}
 
@@ -478,7 +478,7 @@ def words(s):
 
 			\caption{Pearson correlation between sentiments and $\varepsilon_v(t)$\label{pearson_cac_vol_ar}}
 			\end{table}
-			
+
 			% section about sentiment <-> (high - low)/close (amplitude of movement for a given day)
 
 	\chapter{Afterword}
@@ -490,7 +490,7 @@ def words(s):
 		% - non linear correlation
 		% - nltk
 		% - global world? only french news? maybe not
-		
+
 	\bibliographystyle{plain}
 	\bibliography{biblio}
 \end{document}
