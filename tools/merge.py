@@ -5,13 +5,6 @@ import csv
 import datetime
 
 class Data:
-    #words = None
-    #pos = None
-    #neg = None
-    #pos_freq = None
-    #neg_freq = None
-    #volume = None
-    #close = None
     pass
 
 
