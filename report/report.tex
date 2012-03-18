@@ -90,26 +90,28 @@
 		
 		expresses a (positive) sentiment.
 		
-		We should also note that sentiments may be hard to quantify for a computer. For instance in the phrase:
+		We should also note that sentiments may be hard to quantify for a computer. For instance if we use a program that counts the number of occurrences of positive/negative words, the following phrase:
 		
 		\begin{center}
-			\emph{This movie is not so bad.}
+			\emph{This movie is not bad.}
 		\end{center}
 		
-		a computer will consider it negative (because of presence of the word ``bad'') or positive if the program is clever enough to handle negations\footnote{More advanced method for extracting sentiments may produce different results, for instance \href{http://text-processing.com/demo/sentiment/}{Python NLTK} estimates that this phrase has a positive score of 0.1/1 and a negative one of 0.9/1.}. On the other hand an human has not this manichean vision of the world and would not flag this phrase as totally positive/negative. In fact it is hard to evaluate this kind of phrase without further context.
+		will probably be classified as negative (because of presence of the word ``bad'') or positive if the program is clever enough to handle negations\footnote{More advanced method for extracting sentiments may produce better and/or different results, for instance \href{http://text-processing.com/demo/sentiment/}{Python NLTK} estimates that this phrase has a positive score of 0.1/1 and a negative one of 0.9/1.}. On the other hand an human has not this manichean vision of the world and would not flag this phrase as totally positive/negative. In fact it is hard to evaluate this kind of phrase without further context.
 		
 		Now we know what are sentiments, where do they come from? In fact they are everywhere: each time we give our opinion about some subject we probably express sentiments. However to gather enough sentiments to be able to study them, the easiest way is to find them in the media, for instance:
 		\begin{itemize}
-			\item News (e.g. K. Ahmad et al. \cite{ahmad11})
-			\item Blogs (e.g. K. Ahmad et al. \cite{ahmad11})
+			\item News (e.g. R. Remus et al. \cite{remus09})
+			\item Blogs (e.g. R. Remus et al. \cite{remus09})
 			\item Social Networks (e.g. A. Pak et al. \cite{pak10})
 			\item Review Websites (e.g. K. Yessenov and S. Misailovi\'c \cite{yessenov09})
 		\end{itemize}
 		
 		In this study we will focus on sentiments expressed by economic newspapers, because we are interested in the impact of sentiments on stocks markets. In order to build an index of sentiments that varies over time and which not depends on the volume of news for a given day we compute the sentiments frequencies for each day. Of course we distinguish two main categories of sentiments: the positive ones and the negatives one.
 		
-		The studied market will be the CAC40. This is the major French stock index. It's composed by 40 of the most important French companies. Each company is pondered by a weight so the biggest company have more importance in the overall index. The most important companies being Total (oil), Sanofi (pharmaceuticals) and BNP Paribas (banking). The full list of the companies constituent the index can be found \href{http://en.wikipedia.org/wiki/CAC40}{here}. The method to compute index value can be found \href{http://www.euronext.com/fic/000/050/871/508718.pdf}{here}.
-	
+		The studied market will be the CAC40. This is the main French stock index. It's composed by 40 of the most important French companies. Each company is pondered by a weight so the biggest company have more importance in the overall index. The most important companies being Total (oil), Sanofi (pharmaceuticals) and BNP Paribas (banking). The full list of the companies constituent the index can be found \href{http://en.wikipedia.org/wiki/CAC40}{here}. The method to compute index value can be found \href{http://www.euronext.com/fic/000/050/871/508718.pdf}{here}.
+
+		Finally in this study will span from January 1\st, 2004 to March 31\st, 2009. The CAC40 began at 3596.8 points and went up until June 1\st 2007 at a maximum of 6168.15 points. Then it went down until its minimum on the March 3\rd 2009 at 2519.29 points.
+		
 	\chapter{Methodology}
 		\section{Getting the news}
 		
