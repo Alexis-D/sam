@@ -480,6 +480,21 @@ def words(s):
 			\end{table}
 
 			% section about sentiment <-> (high - low)/close (amplitude of movement for a given day)
+			\begin{table}
+			\begin{tabular}{|c || c | c | c|}
+				\hline
+				Sentiments date and CAC40 date & Positive sentiments & Negative sentiments & $\dfrac{Positive}{Negative}$\\
+				\hline
+				previous(day) and day & -0.45 & 0.40 & -0.48\\
+				\hline
+				day and day & -0.45 & 0.39 & -0.48\\
+				\hline
+				next(day) and day & -0.46 & 0.40 & -0.49\\
+				\hline
+			\end{tabular}
+
+			\caption{Pearson correlation between sentiments and $\dfrac{high(day) - low(day)}{close(day)}$\label{pearson_highlow}}
+			\end{table}
 
 	\chapter{Afterword}
 		% conclusion
