@@ -108,9 +108,9 @@
 
 		In this study we will focus on sentiments expressed by economic newspapers, because we are interested in the impact of sentiments on stocks markets. In order to build an index of sentiments that varies over time and which not depends on the volume of news for a given day we compute the sentiments frequencies for each day. Of course we distinguish two main categories of sentiments: the positive ones and the negatives one.
 
-		The studied market will be the CAC40. This is the main French stock index. It's composed by 40 of the most important French companies. Each company is pondered by a weight so the biggest company have more importance in the overall index. The most important companies being Total (oil), Sanofi (pharmaceuticals) and BNP Paribas (banking). The full list of the companies constituent the index can be found \href{http://en.wikipedia.org/wiki/CAC40}{here}. The method to compute index value can be found \href{http://www.euronext.com/fic/000/050/871/508718.pdf}{here}.
+		The studied market will be the CAC40. This is the main French stock index. It is composed by 40 of the most important French companies. Each company is pondered by a weight so the biggest company have more importance in the overall index. The most important companies being Total (oil), Sanofi (pharmaceuticals) and BNP Paribas (banking). The full list of the companies constituent the index can be found \href{http://en.wikipedia.org/wiki/CAC40}{here}. The method to compute index value can be found \href{http://www.euronext.com/fic/000/050/871/508718.pdf}{here}.
 
-		Finally in this study will span from January 1\st, 2004 to March 31\st, 2009. The CAC40 began at 3596.8 points and went up until June 1\st 2007 at a maximum of 6168.15 points. Then it went down until its minimum on the March 3\rd 2009 at 2519.29 points.
+		Finally this study will span from January 1\st, 2004 to March 31\st, 2009. The CAC40 began at 3596.8 points and went up until June 1\st 2007 at a maximum of 6168.15 points. Then it went down until its minimum on the March 3\rd 2009 at 2519.29 points (see figure ~\ref{cac}).
 
 	\chapter{Methodology}
 		\section{Getting the news}
@@ -125,19 +125,19 @@
 
 			The solution proposed by Khurshid Ahmad was to get the data from Lexis Nexis\footnote{\url{http://www.lexisnexis.com/en-us/home.page}}. Lexis Nexis is a platform which has numerous archives of newspapers (including French economic newspapers). Fortunately Trinity College has an agreement with them which allow Trinity students to use the service. Using this platform solved the two problems. In fact I was able to get data from multiple newspapers, and the Lexis Nexis website is ``crawlable''.
 
-			However searching for archives for more than a few days is a tedious task. In consequence I developed a web crawler which browse Lexis Nexis automatically and download the data. Though, there was a few considerations to take into account. The first one was to crawl Lexis Nexis slowly to avoid to be ban from using the service. The second one was how to crawl the website. The first problem was easily solved, I decided to crawl no more than one month of data per day. So I needed roughly two months to get 63 months of data. The technical problem was more interesting. The first thing to consider is that I needed to be able to perform a lot of things with my robot: login, search for archives of each day by filling multiple forms, clicking on various links\ldots At first sight I though I would use Perl WWW::Mechanize\footnote{\url{http://search.cpan.org/dist/WWW-Mechanize/}} or Python Mechanize\footnote{\url{http://wwwsearch.sourceforge.net/mechanize/}}. Unfortunately none of them was able to handle the Javascript stuff (and Lexis Nexis heavily rely on the ability to execute Javascript). In consequence I quickly look on the Internet to find an alternative, and I found Watir\footnote{\url{http://watir.com/}}. Watir is described by Wikipedia\footnote{\url{http://en.wikipedia.org/wiki/Watir}} like that: ``\emph{Web Application Testing in Ruby (or Watir, [\ldots]) is a toolkit used to automate browser-based tests during web application development.}''. So even if it's primary designed for testing purposes we can use it to crawl a website. In fact Watir was the chosen solution because it was simple, and there was not any better alternative. Using Watir can be summed up in two steps:
+			However searching for archives for more than a few days is a tedious task. In consequence I developed a web crawler which browse Lexis Nexis automatically and download the data. Though, there was a few considerations to take into account. The first one was to crawl Lexis Nexis slowly to avoid to be ban from using the service. The second one was how to crawl the website. The first problem was easily solved, I decided to crawl no more than one month of data per day. So I needed roughly two months to get 63 months of data. The technical problem was more interesting. The first thing to consider is that I needed to be able to perform a lot of things with my robot: login, search for archives of each day by filling multiple forms, clicking on various links\ldots At first sight I though I would use Perl WWW::Mechanize\footnote{\url{http://search.cpan.org/dist/WWW-Mechanize/}} or Python Mechanize\footnote{\url{http://wwwsearch.sourceforge.net/mechanize/}}. Unfortunately none of them was able to handle the Javascript stuff (and Lexis Nexis heavily rely on the ability to execute Javascript). In consequence I quickly look on the Internet to find an alternative, and I found Watir\footnote{\url{http://watir.com/}}. Watir is described by Wikipedia\footnote{\url{http://en.wikipedia.org/wiki/Watir}} like that: ``\emph{Web Application Testing in Ruby (or Watir, [\ldots]) is a toolkit used to automate browser-based tests during web application development.}''. So even if it is primary designed for testing purposes we can use it to crawl a website. In fact Watir was the chosen solution because it was simple, and there was not any better alternative. Using Watir can be summed up in two steps:
 			\begin{enumerate}
 				\item Find the correct HTML\footnote{HyperText Markup Language.}/DOM\footnote{Document Object Model.} element.
 				\item Set it to the right value and/or click it.
 			\end{enumerate}
 
-			For instance here's the method (part of the \lstinline!LexisNexisCrawler! class, in the file \lstinline!tools/lncrawler.rb!) that log the user in:
+			For instance here is the method (part of the \lstinline!LexisNexisCrawler! class, in the file \lstinline!tools/lncrawler.rb!) that log the user in:
 
 			\begin{lstlisting}[language=Ruby, basicstyle=]
 def login(url, user='', pass='')
   # ask for login details
   # before going to login
-  # page, so once it's filled user can "go away"
+  # page, so once it is filled user can "go away"
   # obviously if login details are
   # provided to the method, does not ask
   while user.empty? or pass.empty?
@@ -192,7 +192,7 @@ end
 
 			The GI dictionary was translated in French by Stéphane Kazmierczak, so I used it as a base.
 
-			The most commons words were simply found using a little Python script. It just splitted all text in different words (in Python terms it means \lstinline!re.findall(r'\w+', text, re.UNICODE)!), and finally just use \lstinline!collections.Counter! and the \lstinline!.most_common()! method to find the most commons words.
+			The most commons words were simply found using a little Python script. It just splitted all news in different words (in Python terms it means \lstinline!re.findall(r'\w+', text, re.UNICODE)!), and finally just use \lstinline!collections.Counter! and the \lstinline!.most_common()! method to find the most commons words.
 
 			I merged the two dictionaries by hand because I wanted to add a few improvements over the Kazmierczak's one. The first thing was to only keep words that were often used in French. The second and more important improvement was to allow jokers at the end of the words. For instance instead of storing the words \emph{augmentation}, \emph{augmenter}, \emph{augmente} and so on I used a * as a joker and I just stored \emph{augment*}, so all words which have the prefix \emph{augment} are matched.
 
@@ -272,7 +272,7 @@ def words(s):
 	\chapter{Experiments and Evaluation}
 		\section{Graph analysis}
 
-			To get an insight of the data the first thing I did was to plot the data against time (see figures ~\ref{cac}, ~\ref{pos}, ~\ref{neg} and ~\ref{posdivneg}). It worth to be noted that the plots of returns and volatility does not show anything interesting --except that the magnitude of both returns and volatility of the CAC40 is higher since the end of 2008-- that's why they are not included here.
+			To get an insight of the data the first thing I did was to plot the data against time (see figures ~\ref{cac}, ~\ref{pos}, ~\ref{neg} and ~\ref{posdivneg}). It worth to be noted that the plots of returns and volatility does not show anything interesting --except that the magnitude of both returns and volatility of the CAC40 is higher since the end of 2008-- that is why they are not included here.
 
 			\begin{figure}[h!]
 				\caption{CAC40 close over time\label{cac}}
@@ -301,7 +301,7 @@ def words(s):
 				\item After mid-2007
 			\end{itemize}
 
-			 We can sum up the trends in a table (see Table ~\ref{trends}). It's now easier to compare the time series with each other:
+			 We can sum up the trends in a table (see Table ~\ref{trends}). It is now easier to compare the time series with each other:
 			 \begin{itemize}
 			 	\item The level of positive sentiments is higher when the CAC40 goes up and lower when it goes down.
 			 	\item The level of negative sentiments seems to be the opposite of the CAC40 movements.
@@ -329,7 +329,7 @@ def words(s):
 
 			This clearly shows that the sentiments and the CAC40 follows some trends during \textbf{the same periods} and \textbf{may be somewhat related}. This is leaves us two questions: does CAC40 trends follows sentiments trends (or the opposite)? Can we draw the same conclusion on a daily basis (instead of a four years time frame)?
 
-			Another interesting thing to visualize is the distribution of return (see figures ~\ref{dist_cac}, ~\ref{dist_vol}, ~\ref{dist_sentiments}). Even if it proves nothing the fact that all distributions are the same shows that our hypothesis remains plausible. If the distributions have been totally different, the hypothesis would have been wrong.
+			Another interesting thing to visualize is the distribution of return (see figures ~\ref{dist_cac}, ~\ref{dist_vol}, ~\ref{dist_sentiments}). Even if it proves nothing the fact that all distributions have the same shape shows that our hypothesis remains plausible. If the distributions have been totally different, the hypothesis would have been wrong.
 
 			\begin{figure}[H]
 				\caption{Distribution of the CAC40 close returns\label{dist_cac}}
@@ -348,11 +348,11 @@ def words(s):
 
 		\section{Correlation between sentiments and the CAC40}
 
-			The primary goal of this project was to show if there's a correlation between sentiments expressed in economic news and the daily changes of the CAC40. It's possible to search a correlation between the returns or the volatily of the CAC/the sentiments.
+			The primary goal of this project was to show if there is a correlation between sentiments expressed in economic news and the daily changes of the CAC40. It is possible to search a correlation between the returns or the volatily of the CAC/the sentiments.
 
-			To do this I used the Pearson correlation\footnote{\url{http://en.wikipedia.org/wiki/Pearson_product-moment_correlation_coefficient}}. Pearson correlation is a mathematical tool which try to show if there's a correlation between two datasets. It gives us a \emph{correlation coefficient} in the range $[-1, 1]$. If the value of $|correlation\ coefficient|$ is close to 1 this means that it exists a strong correlation between the two datasets, a value close to 0 means that there's no correlation.
+			To do this I used the Pearson correlation\footnote{\url{http://en.wikipedia.org/wiki/Pearson_product-moment_correlation_coefficient}}. Pearson correlation is a mathematical tool which try to show if there is a correlation between two datasets. It gives us a \emph{correlation coefficient} in the range $[-1, 1]$. If the value of $|correlation\ coefficient|$ is close to 1 this means that it exists a strong correlation between the two datasets, a value close to 0 means that there is no correlation.
 
-			Correlation coefficients between returns of sentiments, CAC40 close and CAC40 volume were calculated. I computed them on the same day or with an interval of one day (to see if news forecasts the CAC40 or the inverse). The results are shown in the table ~\ref{pearson_cac} and ~\ref{pearson_volume}. We can see that all the coefficients are within the interval $[-0.1, 0.1]$ which means that we cannot show that there's a correlation between the returns of sentiments and the returns of the CAC40 or the returns of the CAC40 volume.
+			Correlation coefficients between returns of sentiments, CAC40 close and CAC40 volume were calculated. I computed them on the same day or with an interval of one day (to see if news forecasts the CAC40 or the inverse). The results are shown in the table ~\ref{pearson_cac} and ~\ref{pearson_volume}. We can see that all the coefficients are within the interval $[-0.1, 0.1]$ which means that we cannot show that there is a correlation between the returns of sentiments and the returns of the CAC40 or the returns of the CAC40 volume.
 
 			\begin{table}
 			\begin{tabular}{|c || c | c | c|}
@@ -391,7 +391,7 @@ def words(s):
 				\item Between sentiments and CAC40 close, table ~\ref{pearson_vol_cac}.
 				\item Between sentiments and CAC40 volume, table ~\ref{pearson_vol_vol}.
 			\end{itemize}
-			However all the correlation coefficients are in the interval $[-0.21, 0.32]$. This is better than the returns correlations, but this is still low.
+			However all the correlation coefficients are in the interval $[-0.32, 0.13]$. This is better than the returns correlations, but this is still low.
 
 			\begin{table}
 			\begin{center}
@@ -429,7 +429,7 @@ def words(s):
 				cac40\_close(t) = \alpha_0 + \sum_{i = 1}^{n}\left(\alpha_i\times{}cac40\_close(t - i)\right) + \varepsilon(t)\label{hypo_cac}
 			\end{eqnarray}
 
-			For some small $n$, say 7. The interesting part is the error term $\varepsilon(t)$. It's a small variation and we make the hypothesis that its value is influenced by sentiments.
+			For some small $n$, say 7. The interesting part is the error term $\varepsilon(t)$. It is a small variation and we make the hypothesis that its value is influenced by sentiments.
 
 			To find the $\alpha_i$ I used an autoregressive model\footnote{I used a Python module by Ernesto Adorio which can be found \href{http://adorio-research.org/wordpress/?p=4551}{here}.}, ``trained'' over 90\% of the data. Then I computed the error term produced by the model on the remaining 10\% of the data, see equation ~\ref{hypo_epsilon}.
 
@@ -437,7 +437,7 @@ def words(s):
 				\varepsilon(t) = cac40\_close(t) - \alpha_0 - \sum_{i = 1}^{7} \left(\alpha_i\times{}cac40\_close(t - i)\right)\label{hypo_epsilon}
 			\end{eqnarray}
 
-			Finally to test the validity of the hypothesis I computed various correlations between sentiments and $\varepsilon(t)$. The results can be seen in the table ~\ref{pearson_cac_ar}. Again the correlations coefficients are low (in the interval $[-0.1, 0.3]$) \emph{but} they are higher than the direct correlation between returns. So even if the correlation is far from perfect it looks like this hypothesis is better. Obviously they are numerous factors distincts from sentiments which occurs in the value of $\varepsilon(t)$, that's why the correlation is low.
+			Finally to test the validity of the hypothesis I computed various correlations between sentiments and $\varepsilon(t)$. The results can be seen in the table ~\ref{pearson_cac_ar}. Again the correlations coefficients are low (in the interval $[-0.1, 0.3]$) \emph{but} they are higher than the direct correlation between returns. So even if the correlation is far from perfect it looks like this hypothesis is better. Obviously they are numerous factors distincts from sentiments which occurs in the value of $\varepsilon(t)$, that is why the correlation is low.
 
 			\begin{table}
 			\begin{tabular}{|c || c | c | c|}
@@ -455,7 +455,7 @@ def words(s):
 			\caption{Pearson correlation between sentiments and $\varepsilon(t)$\label{pearson_cac_ar}}
 			\end{table}
 
-			It's also possible to apply the same analysis with the CAC40 volume, where the formula is nearly the same, see equation ~\ref{hypo_vol} (the only change is $\alpha_i \rightarrow \alpha_{v_i}$ and $\varepsilon(t) \rightarrow \varepsilon_v(t)$ to avoid confusion).
+			It is also possible to apply the same analysis with the CAC40 volume, where the formula is nearly the same, see equation ~\ref{hypo_vol} (the only change is $\alpha_i \rightarrow \alpha_{v_i}$ and $\varepsilon(t) \rightarrow \varepsilon_v(t)$ to avoid confusion).
 
 			\begin{eqnarray}
 				cac40\_volume(t) = \alpha_{v_0} + \sum_{i = 1}^{7}\left(\alpha_{v_i}\times{}cac40\_volume(t - i)\right) + \varepsilon_v(t)\label{hypo_vol}
