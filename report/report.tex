@@ -90,7 +90,7 @@ So the first question is: what are sentiments? Sentiments are a way to express o
 
 expresses a (positive) sentiment.
 
-We should also note that sentiments may be hard to quantify for a computer. For instance if we use a program that counts the number of occurrences of positive/negative words, the following phrase:
+It should be noted that sentiments may be hard to quantify for a computer. For instance if a program counts the number of occurrences of positive/negative words to measure sentiments, the following phrase:
 
 \begin{center}
 	\emph{This movie is not bad.}
@@ -98,7 +98,7 @@ We should also note that sentiments may be hard to quantify for a computer. For 
 
 will probably be classified as negative (because of presence of the word ``bad'') or positive if the program is clever enough to handle negations\footnote{More advanced method for extracting sentiments may produce better and/or different results, for instance \href{http://text-processing.com/demo/sentiment/}{Python NLTK} estimates that this phrase has a positive score of 0.1/1 and a negative one of 0.9/1.}. On the other hand an human has not this manichean vision of the world and would not flag this phrase as totally positive/negative. In fact it is hard to evaluate this kind of phrase without further context.
 
-Now we know what are sentiments, where do they come from? In fact they are everywhere: each time we give our opinion about some subject we probably express sentiments. However to gather enough sentiments to be able to study them, the easiest way is to find them in the media, for instance:
+Now we know what are sentiments, where do they come from? In fact they are everywhere: each time we give our opinion about some subject we express sentiments. However to gather enough sentiments to be able to study them, the easiest way is to find them in the media, for instance:
 \begin{itemize}
 	\item News (e.g. R. Remus et al. \cite{remus09})
 	\item Blogs (e.g. R. Remus et al. \cite{remus09})
@@ -106,7 +106,7 @@ Now we know what are sentiments, where do they come from? In fact they are every
 	\item Review Websites (e.g. K. Yessenov and S. Misailovi\'c \cite{yessenov09})
 \end{itemize}
 
-In this study we will focus on sentiments expressed by economic newspapers, because we are interested in the impact of sentiments on stocks markets. In order to build an index of sentiments that varies over time and which not depends on the volume of news for a given day we compute the sentiments frequencies for each day. Of course we distinguish two main categories of sentiments: the positive ones and the negatives one.
+This study will focus on sentiments expressed by economic newspapers, because the goal is to find if sentiments impacts stocks markets. In order to build an index of sentiments that varies over time and which not depends on the volume of news for a given day we compute the sentiments frequencies for each day. Of course we distinguish two main categories of sentiments: the positive ones and the negatives one.
 
 The studied market will be the CAC40. This is the main French stock index. It is composed by 40 of the most important French companies. Each company is pondered by a weight so the biggest company have more importance in the overall index. The most important companies being Total (oil), Sanofi (pharmaceuticals) and BNP Paribas (banking). The full list of the companies constituent the index can be found \href{http://en.wikipedia.org/wiki/CAC40}{here}. The method to compute index value can be found \href{http://www.euronext.com/fic/000/050/871/508718.pdf}{here}.
 
@@ -125,7 +125,7 @@ In 2009, Stéphane Kazmierczak \cite{kazmierczak08} did similar experiments and 
 
 The solution proposed by Khurshid Ahmad was to get the data from Lexis Nexis\footnote{\url{http://www.lexisnexis.com/en-us/home.page}}. Lexis Nexis is a platform which has numerous archives of newspapers (including French economic newspapers). Fortunately Trinity College has an agreement with them which allow Trinity students to use the service. Using this platform solved the two problems. In fact I was able to get data from multiple newspapers, and the Lexis Nexis website is ``crawlable''.
 
-However searching for archives for more than a few days is a tedious task. In consequence I developed a web crawler which browse Lexis Nexis automatically and download the data. Though, there was a few considerations to take into account. The first one was to crawl Lexis Nexis slowly to avoid to be ban from using the service. The second one was how to crawl the website. The first problem was easily solved, I decided to crawl no more than one month of data per day. So I needed roughly two months to get 63 months of data. The technical problem was more interesting. The first thing to consider is that I needed to be able to perform a lot of things with my robot: login, search for archives of each day by filling multiple forms, clicking on various links\ldots At first sight I though I would use Perl WWW::Mechanize\footnote{\url{http://search.cpan.org/dist/WWW-Mechanize/}} or Python Mechanize\footnote{\url{http://wwwsearch.sourceforge.net/mechanize/}}. Unfortunately none of them was able to handle the Javascript stuff (and Lexis Nexis heavily rely on the ability to execute Javascript). In consequence I quickly look on the Internet to find an alternative, and I found Watir\footnote{\url{http://watir.com/}}. Watir is described by Wikipedia\footnote{\url{http://en.wikipedia.org/wiki/Watir}} like that: ``\emph{Web Application Testing in Ruby (or Watir, [\ldots]) is a toolkit used to automate browser-based tests during web application development.}''. So even if it is primary designed for testing purposes we can use it to crawl a website. In fact Watir was the chosen solution because it was simple, and there was not any better alternative. Using Watir can be summed up in two steps:
+However searching for archives for more than a few days is a tedious task. In consequence I developed a web crawler which browse Lexis Nexis automatically and download the data. Though, there was a few considerations to take into account. The first one was to crawl Lexis Nexis slowly to avoid to be ban from using the service. The second one was how to crawl the website. The first problem was easily solved, I decided to crawl no more than one month of data per day. So I needed roughly two months to get 63 months of data. The technical problem was more interesting. The first thing to consider is that I needed to be able to perform a lot of things with my robot: login, search for archives of each day by filling multiple forms, clicking on various links\ldots At first sight I though I would use Perl WWW::Mechanize\footnote{\url{http://search.cpan.org/dist/WWW-Mechanize/}} or Python Mechanize\footnote{\url{http://wwwsearch.sourceforge.net/mechanize/}}. Unfortunately none of them was able to handle the Javascript stuff (and Lexis Nexis heavily rely on the ability to execute Javascript). In consequence I quickly look on the Internet to find an alternative, and I found Watir\footnote{\url{http://watir.com/}}. Watir is described by Wikipedia\footnote{\url{http://en.wikipedia.org/wiki/Watir}} like that: ``\emph{Web Application Testing in Ruby (or Watir, [\ldots]) is a toolkit used to automate browser-based tests during web application development.}''. So even if it is primary designed for testing purposes it is possible to use it to crawl a website. In fact Watir was the chosen solution because it was simple, and there was not any better alternative. Using Watir can be summed up in two steps:
 \begin{enumerate}
 	\item Find the correct HTML\footnote{HyperText Markup Language.}/DOM\footnote{Document Object Model.} element.
 	\item Set it to the right value and/or click it.
@@ -258,7 +258,7 @@ Using LibreOffice Calc I performed several computations. I began by plotting the
 	return = \ln\frac{V_f}{V_i}\label{return}
 \end{eqnarray}
 
-Where $V_f$ is the final value investment and $V_i$ the initial value of investment. In order to compute daily returns we use equations ~\ref{preturn}, ~\ref{nreturn}, ~\ref{creturn} and ~\ref{vreturn}.
+Where $V_f$ is the final value investment and $V_i$ the initial value of investment. In order to compute daily returns the equations ~\ref{preturn}, ~\ref{nreturn}, ~\ref{creturn} and ~\ref{vreturn} are used.
 
 \begin{eqnarray}
 	positive\_return(day) &=& \ln\left(\frac{positive\_freq(day)}{positive\_freq(previous\_day(day))}\right)\label{preturn}\\
@@ -301,7 +301,7 @@ The first thing to notice is that all the graph can be divided in the same perio
 	\item After mid-2007
 \end{itemize}
 
-We can sum up the trends in a table (see Table ~\ref{trends}). It is now easier to compare the time series with each other:
+Those trends can be summed up in a table (see Table ~\ref{trends}). It is now easier to compare the time series with each other:
 \begin{itemize}
 	\item The level of positive sentiments is higher when the CAC40 goes up and lower when it goes down.
 	\item The level of negative sentiments seems to be the opposite of the CAC40 movements.
@@ -327,9 +327,9 @@ We can sum up the trends in a table (see Table ~\ref{trends}). It is now easier 
 	\end{table}
 \end{center}
 
-This clearly shows that the sentiments and the CAC40 follows some trends during \textbf{the same periods} and \textbf{may be somewhat related}. This is leaves us two questions: does CAC40 trends follows sentiments trends (or the opposite)? Can we draw the same conclusion on a daily basis (instead of a four years time frame)?
+This clearly shows that the sentiments and the CAC40 follows some trends during \textbf{the same periods} and \textbf{may be somewhat related}. This is leaves us two questions: does CAC40 trends follows sentiments trends (or the opposite)? Is it possible to draw the same conclusion on a daily basis (instead of a four years time frame)?
 
-Another interesting thing to visualize is the distribution of return (see figures ~\ref{dist_cac}, ~\ref{dist_vol}, ~\ref{dist_sentiments}). Even if it proves nothing the fact that all distributions have the same shape shows that our hypothesis remains plausible. If the distributions have been totally different, the hypothesis would have been wrong.
+Another interesting thing to visualize is the distribution of returns (see figures ~\ref{dist_cac}, ~\ref{dist_vol}, ~\ref{dist_sentiments}). It can be seen that sentiments returns and CAC40 close/volume returns share the same important properties: they are centered around 0 and they have the same shape. This does not prove anything but if all those datasets looks the same maybe they are correlated.
 
 \begin{figure}[H]
 	\caption{Distribution of the CAC40 close returns\label{dist_cac}}
@@ -352,7 +352,7 @@ The primary goal of this project was to show if there is a correlation between s
 
 To do this I used the Pearson correlation\footnote{\url{http://en.wikipedia.org/wiki/Pearson_product-moment_correlation_coefficient}}. Pearson correlation is a mathematical tool which try to show if there is a correlation between two datasets. It gives us a \emph{correlation coefficient} in the range $[-1, 1]$. If the value of $|correlation\ coefficient|$ is close to 1 this means that it exists a strong correlation between the two datasets, a value close to 0 means that there is no correlation.
 
-Correlation coefficients between returns of sentiments, CAC40 close and CAC40 volume were calculated. I computed them on the same day or with an interval of one day (to see if news forecasts the CAC40 or the inverse). The results are shown in the table ~\ref{pearson_cac} and ~\ref{pearson_volume}. We can see that all the coefficients are within the interval $[-0.1, 0.1]$ which means that we cannot show that there is a correlation between the returns of sentiments and the returns of the CAC40 or the returns of the CAC40 volume.
+Correlation coefficients between returns of sentiments, CAC40 close and CAC40 volume were calculated. I computed them on the same day or with an interval of one day (to see if news forecasts the CAC40 or the inverse). The results are shown in the table ~\ref{pearson_cac} and ~\ref{pearson_volume}. It can be seen that all the coefficients are within the interval $[-0.1, 0.1]$ which means that it is not possible to show that there is a correlation between the returns of sentiments and the returns of the CAC40 or the returns of the CAC40 volume.
 
 \begin{table}
 	\begin{tabular}{|c || c | c | c|}
@@ -423,7 +423,7 @@ However all the correlation coefficients are in the interval $[-0.32, 0.13]$. Th
 
 \section{Toward a better hypothesis}
 
-If we look at the CAC40 close data we can see that two consecutive close are highly correlated (the correlation coefficient is higher than 0.99). We can also see that this remains true for closes separated by a few days. So we may try another hypothesis, see equation ~\ref{hypo_cac}.
+The CAC40 close data show that two consecutive close are highly correlated (the correlation coefficient is higher than 0.99). In fact this observation remains true for closes separated by a few days. In consequence another hypothesis can be formulated, see equation ~\ref{hypo_cac}.
 
 \begin{eqnarray}
 	cac40\_close(t) = \alpha_0 + \sum_{i = 1}^{n}\left(\alpha_i\times{}cac40\_close(t - i)\right) + \varepsilon(t)\label{hypo_cac}
@@ -461,7 +461,7 @@ It is also possible to apply the same analysis with the CAC40 volume, where the 
 	cac40\_volume(t) = \alpha_{v_0} + \sum_{i = 1}^{7}\left(\alpha_{v_i}\times{}cac40\_volume(t - i)\right) + \varepsilon_v(t)\label{hypo_vol}
 \end{eqnarray}
 
-I applied the same process to find the $\alpha_{v_i}$ and then I computed the correlations coefficient between sentiments and $\varepsilon_v(t)$ (see table ~\ref{pearson_cac_vol_ar}). We can draw the same conclusions as for the close data: the coefficients are still low (in $[-0.24, 0.30]$) \emph{but} they are higher than the simple correlation between returns.
+I applied the same process to find the $\alpha_{v_i}$ and then I computed the correlations coefficient between sentiments and $\varepsilon_v(t)$ (see table ~\ref{pearson_cac_vol_ar}). It is possible to draw the same conclusions as for the close data: the coefficients are still low (in $[-0.24, 0.30]$) \emph{but} they are higher than the simple correlation between returns.
 
 \begin{table}
 	\begin{tabular}{|c || c | c | c|}
