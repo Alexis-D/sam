@@ -212,10 +212,10 @@ Once it was done I was able to perform calculation over the corpus. For each day
 	words(day) &=& \textrm{A list of all words in the news of day}\nonumber\\
 	\nonumber\\
 	positive\_set &=& positive\_words\_set - economic\_words\_set\nonumber\\
-   positive\_words(day) &=& \sum_{w \in words(day)} \begin{cases}1 & \textrm{ if }w \in positive\_set\\ 0 & \mbox{ otherwise }\end{cases}\label{pwords}\\
+   positive\_words(day) &=& \sum_{w \in words(day)} \begin{cases}1 & \mbox{if }w \in positive\_set\\ 0 & \mbox{otherwise }\end{cases}\label{pwords}\\
 	\nonumber\\
 	negative\_set &=& negative\ words\ set - economic\ words\ set\nonumber\\
-   negative\_words(day) &=& \sum_{w \in words(day)} \begin{cases}1 & \textrm{ if }w \in negative\_set\\ 0 & \mbox{ otherwise }\end{cases}\label{nwords}\\
+   negative\_words(day) &=& \sum_{w \in words(day)} \begin{cases}1 & \mbox{if }w \in negative\_set\\ 0 & \mbox{otherwise }\end{cases}\label{nwords}\\
 	\nonumber\\
 	number\_of\_words(day) &=& length(words(day))\label{twords}
 \end{eqnarray}

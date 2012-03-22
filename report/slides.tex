@@ -1,7 +1,7 @@
 \documentclass{beamer}
 \usepackage[utf8]{inputenc}
 \usepackage{graphicx}
-\usetheme{Antibes}
+\usetheme{Pittsburgh}
 \title{Sentiment Analysis, News \& CAC40}
 \author{Alexis Daboville}
 \institute{Trinity College Dublin}
@@ -47,7 +47,7 @@
 	\begin{eqnarray*}
 		words(day) &=& \textrm{A list of all words in the news of day}\\
   positive\_set &=& positive\_words\_set - economic\_words\_set\\
-	positive\_words(day) &=& \sum_{w \in words(day)} \begin{cases}1 & \textrm{ if }w \in positive\_set\\ 0 & \mbox{ otherwise }\end{cases}\\
+	positive\_words(day) &=& \sum_{w \in words(day)} \begin{cases}1 & \mbox{if }w \in positive\_set\\ 0 & \mbox{otherwise }\end{cases}\\
 		positive\_freq(day) &=& \frac{length(positive\_words(day))}{length(words(day))}
 	\end{eqnarray*}
 
