@@ -516,14 +516,23 @@ I applied the same process to find the $\alpha_{v_i}$ and then I computed the co
 %\end{table}
 
 \chapter{Afterword}
-		% conclusion
-		% results?
-		% future work
-		% - nn?
-		% - 7? try with other value in [1,15]
-		% - non linear correlation
-		% - nltk
-		% - global world? only french news? maybe not
+
+\section{Results}
+On one hand the results are disappointing: the evolution over time of the CAC40 and sentiments showed that they follow trends during the same periods, but on the other hand if we look at the daily correlation between sentiments and the CAC40 the results are far from being perfect. However this is not really surprising:
+\begin{itemize}
+	\item The hypothesis were probably too simple: the CAC40 depends on much more variables than just the close of previous days and sentiments. It even seems to be irrational sometimes.
+	\item If that was easy/simple to forecast markets it would probably be a known fact, and even if that was the case that would introduce some change in the way markets behave so it would be necessary to find another model.
+\end{itemize}
+
+\section{Improvments}
+To conclude I think this project can be improved and here are the main improvements that can be done in my opinion:
+\begin{enumerate}
+	\item The hypothesis stated in the equation ~\ref{hypo_cac} can be improved by considering that $\varepsilon(t)$ does not only depends on sentiments but also on other markets and political decisions for instance.
+	\item Also I tried to verify this hypothesis (~\ref{hypo_cac}) with $n = 7$ which was a somewhat arbitrary choice, maybe other values would provide better results.
+	\item Use a better method to extract sentiments. I used a very simplistic method which will fail to classify a phrase like ``\emph{I do not like this}'' because of the negation. I think a good idea would be to use NLTK\footnote{\url{http://www.nltk.org/}} (Natural Language Toolkit).
+	\item Different news sources should have different weights in the overall sentiment index, some newspapers/new websites have more influence than others.
+	\item Pearson correlation and autoregressive model are just mathematical tools, maybe other tools (neural networks?) can provide better results.
+\end{enumerate}
 
 \bibliographystyle{plain}
 \bibliography{biblio}
