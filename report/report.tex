@@ -202,8 +202,6 @@ Then when I needed to lookup if a word is in one of the dictionary I used tries\
 
 \section{Processing the data}
 
-\emph{\color{red}I'm not sure I'll leave this here (3.4 \& 3.5): the definitions of sentiment frequencies/returns should probably go in the 1\st section\ldots}
-
 Once I had all the news the first thing to do was to reformat them. For example I had to remove useless metadata and normalize the dates (which were sometimes in French and sometimes in English\ldots). This work was done with a little Python script (\lstinline!tools/format.py!).
 
 Once it was done I was able to perform calculation over the corpus. For each day I computed the number of positive words, negative words and the total number of words, (see equations ~\ref{pwords}, ~\ref{nwords} and ~\ref{twords}).
@@ -252,13 +250,13 @@ Usually the sentiment frequencies are defined as the average of the sentiment fr
 
 The analysis of the data was done with LibreOffice Calc\footnote{\url{http://www.libreoffice.org/features/calc/}} which is a free and open source alternative to Microsoft Excel\footnote{\url{http://office.microsoft.com/en-us/excel/}}. To use it I just needed to import the  CSV file produced at the merge step. Then I was able to use the common functions like: \lstinline!AVERAGE!, \lstinline!STDEV!, \lstinline!PEARSON!, etc).
 
-Using LibreOffice Calc I performed several computations. I began by plotting the $positive\_freq(day)$, $negative\_freq(day)$, $close\_cac40(day)$ and $volume\_cac40(day)$. I also computed the mean and the standard deviation of each of these variable. Then I computed their daily logarithmic return. The logarithmic return is defined as equation ~\ref{return} (Wikipedia\footnote{\url{http://en.wikipedia.org/wiki/Rate_of_return\#Logarithmic_or_continuously_compounded_return}}).
+Using LibreOffice Calc I performed several computations. I began by plotting the $positive\_freq(day)$, $negative\_freq(day)$, $close\_cac40(day)$ and $volume\_cac40(day)$. Then I computed their daily logarithmic return. The logarithmic return is defined as equation ~\ref{return} (Wikipedia\footnote{\url{http://en.wikipedia.org/wiki/Rate_of_return\#Logarithmic_or_continuously_compounded_return}}).
 
 \begin{eqnarray}
 	return = \ln\frac{V_f}{V_i}\label{return}
 \end{eqnarray}
 
-Where $V_f$ is the final value investment and $V_i$ the initial value of investment. In order to compute daily returns the equations ~\ref{preturn}, ~\ref{nreturn}, ~\ref{creturn} and ~\ref{vreturn} are used.
+Where $V_f$ is the final value investment and $V_i$ the initial value of investment. The return is an interesting value because it gives information about the direction of the change between two date (sign of the return) and also about the magnitude of the change (absolute value of the return). In order to compute daily returns the equations ~\ref{preturn}, ~\ref{nreturn}, ~\ref{creturn} and ~\ref{vreturn} are used.
 
 \begin{eqnarray}
 	positive\_return(day) &=& \ln\left(\frac{positive\_freq(day)}{positive\_freq(previous\_day(day))}\right)\label{preturn}\\
@@ -267,7 +265,7 @@ Where $V_f$ is the final value investment and $V_i$ the initial value of investm
 				  volume\_return(day) &=& \ln\left(\frac{volume\_freq(day)}{volume\_freq(previous\_day(day))}\right)\label{vreturn}
 \end{eqnarray}
 
-Finally I computed the 1 month volatility of the same variables which is the standard deviation of their returns over a 30 day period.
+Finally I computed the 1 month volatility of the same variables which is the standard deviation of their returns over a 30 day period. The volatility give information about how the measured value evolved over the time. If the volatility of the CAC40 for instance is low for a given period of time it means that the CAC40 was ``quiet'' (without big changed). On the other hand if the volatility is high it means that that the CAC40 experienced a turbulent period with huge returns (absolute value). However it gives no information about the direction of the changes.
 
 \chapter{Experiments and Evaluation}
 \section{Graph analysis}
@@ -423,7 +421,7 @@ However all the correlation coefficients are in the interval $[-0.32, 0.13]$. Th
 
 \section{Toward a better hypothesis}
 
-The CAC40 close data show that two consecutive close are highly correlated (the correlation coefficient is higher than 0.99). In fact this observation remains true for closes separated by a few days. In consequence another hypothesis can be formulated, see equation ~\ref{hypo_cac}.
+The CAC40 close data show that two consecutive close are highly correlated (the correlation coefficient is higher than 0.99). In fact this observation remains true for closes separated by a few days. In consequence another hypothesis can be formulated, see equation ~\ref{hypo_cac}. This equation just state that the CAC40 close of a given day is equal to some constant plus the sum of some coefficients $\alpha_i$ times the CAC40 close at $t - i$ plus an error term $\varepsilon(t)$.
 
 \begin{eqnarray}
 	cac40\_close(t) = \alpha_0 + \sum_{i = 1}^{n}\left(\alpha_i\times{}cac40\_close(t - i)\right) + \varepsilon(t)\label{hypo_cac}
@@ -479,22 +477,33 @@ I applied the same process to find the $\alpha_{v_i}$ and then I computed the co
 	\caption{Pearson correlation between sentiments and $\varepsilon_v(t)$\label{pearson_cac_vol_ar}}
 \end{table}
 
-			% section about sentiment <-> (high - low)/close (amplitude of movement for a given day)
-\begin{table}
-	\begin{tabular}{|c || c | c | c|}
-		\hline
-		Sentiments date and CAC40 date & Positive sentiments & Negative sentiments & $\dfrac{Positive}{Negative}$\\
-		\hline
-		previous(day) and day & -0.45 & 0.40 & -0.48\\
-		\hline
-		day and day & -0.45 & 0.39 & -0.48\\
-		\hline
-		next(day) and day & -0.46 & 0.40 & -0.49\\
-		\hline
-	\end{tabular}
+%\section{Range prediction}
 
-	\caption{Pearson correlation between sentiments and $\dfrac{high(day) - low(day)}{close(day)}$\label{pearson_highlow}}
-\end{table}
+%Another important information about the CAC40 is the range. It is defined as equation ~\ref{range}.
+
+%\begin{eqnarray}
+%	range(day) = \frac{high(day) - low(day)}{close(day)}\label{range}
+%\end{eqnarray}
+
+%Where $high(day)$ (resp. $low(day)$) represent the maximum (resp. minimum) value of the CAC40 during the given day. This value show what was the magnitude of the change during a given day (without information on the direction of the change). It is possible to make an analogy with the volatility: a low range means that the market was ``quiet'' and a high range means that huge changes happened during a given day.
+
+%So I computed the range on the whole studied period and I tried to find a correlation with sentiments. The results can be found in the table ~\ref{pearson_highlow}. % conclusion? look at the distribution: Ii;-,.
+
+%\begin{table}
+%	\begin{tabular}{|c || c | c | c|}
+%		\hline
+%		Sentiments date and CAC40 date & Positive sentiments & Negative sentiments & $\dfrac{Positive}{Negative}$\\
+%		\hline
+%		previous(day) and day & -0.45 & 0.40 & -0.48\\
+%		\hline
+%		day and day & -0.45 & 0.39 & -0.48\\
+%		\hline
+%		next(day) and day & -0.46 & 0.40 & -0.49\\
+%		\hline
+%	\end{tabular}
+%
+%	\caption{Pearson correlation between sentiments and CAC40 range\label{pearson_highlow}}
+%\end{table}
 
 \chapter{Afterword}
 		% conclusion
