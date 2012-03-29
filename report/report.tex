@@ -65,7 +65,7 @@ Without these amazing free and open source software this project would have been
 
 Sentiment analysis is the study of sentiments. The first step is to gather data and extract sentiments from it. The second step is to find some \emph{meaning} in these sentiments. In this study the goal is to find some economic meaning: does sentiments expressed by economic newspapers have an impact on the CAC40 (the main French stock index)?
 
-In the first section I will quickly explain what is sentiment analysis, and what have been done in the past. In the following section I will explain how I gathered the data, and preprocessed it. Then in the "Experiments and Evaluation" part I explain what I have done with the data in order to complete the step 2 of sentiment analysis: finding meaning. Finally I will conclude with some ideas to extend and improve this study.
+In the first section I quickly explain what is sentiment analysis, and what have been done in the past. In the following section I explain how I gathered the data, and processed it. Then in the "Experiments and Evaluation" part I explain what I have done with the data in order to complete the step 2 of sentiment analysis: finding meaning. Finally I conclude with some ideas to extend and improve this study.
 
 All files that I will refer in this document are available at the following address:
 \begin{center}
@@ -121,11 +121,11 @@ Now we know what are sentiments, where do they come from? In fact they are every
 	\item Review Websites (e.g. K. Yessenov and S. Misailovi\'c \cite{yessenov09})
 \end{itemize}
 
-This study will focus on sentiments expressed by economic newspapers, because the goal is to find if sentiments impacts stocks markets. In order to build an index of sentiments that varies over time and which not depends on the volume of news for a given day we compute the sentiments frequencies for each day. Of course we distinguish two main categories of sentiments: the positive ones and the negatives one.
+This study will focus on sentiments expressed by economic newspapers, because the goal is to find if sentiments impact stocks markets. In order to build an index of sentiments that varies over time and which not depends on the volume of news for a given day, we compute the sentiments frequencies for each day. Of course we distinguish two main categories of sentiments: the positive ones and the negatives one.
 
 The studied market will be the CAC40. This is the main French stock index. It is composed by 40 of the most important French companies. Each company is pondered by a weight so the biggest company have more importance in the overall index. The most important companies being Total (oil), Sanofi (pharmaceuticals) and BNP Paribas (banking). The full list of the companies constituent the index can be found \href{http://en.wikipedia.org/wiki/CAC40}{here}. The method to compute index value can be found \href{http://www.euronext.com/fic/000/050/871/508718.pdf}{here}.
 
-Finally this study will span from January 1\st, 2004 to March 31\st, 2009. The CAC40 began at 3596.8 points and went up until June 1\st 2007 at a maximum of 6168.15 points. Then it went down until its minimum on the March 3\rd 2009 at 2519.29 points (see figure ~\ref{cac}).
+Finally this study will span from January 1\st, 2004 to March 31\st, 2009. The CAC40 began at 3596.8 points and went up until June 1\st, 2007 at a maximum of 6168.15 points. Then it went down until its minimum on the March 3\rd, 2009 at 2519.29 points (see figure ~\ref{cac}).
 
 \chapter{Methodology}
 \section{Getting the news}
@@ -134,11 +134,11 @@ There was a few options to consider for getting news data. The first one was to 
 
 In 2009, Stéphane Kazmierczak \cite{kazmierczak08} did similar experiments and got his data by crawling the website Investir.fr\footnote{\url{http://www.investir.fr/}}. Investir.fr is a website about economy and stock markets. The problem is that there are two downsides using this approach:
 \begin{itemize}
-	\item All the data comes from a single source.
+	\item All the data came from a single source.
 	\item Currently most of economics news website have paid archives (which prevents me from crawling them).
 \end{itemize}
 
-The solution proposed by Khurshid Ahmad was to get the data from Lexis Nexis\footnote{\url{http://www.lexisnexis.com/en-us/home.page}}. Lexis Nexis is a platform which has numerous archives of newspapers (including French economic newspapers). Fortunately Trinity College has an agreement with them which allow Trinity students to use the service. Using this platform solved the two problems. In fact I was able to get data from multiple newspapers, and the Lexis Nexis website is ``crawlable''.
+The solution proposed by Khurshid Ahmad was to get the data from Lexis Nexis\footnote{\url{http://www.lexisnexis.com/en-us/home.page}}. Lexis Nexis is a platform which has numerous archives of newspapers (including French economic newspapers). Fortunately Trinity College has an agreement with them which allow Trinity students to use the service (for free). Using this platform solved the two problems. In fact I was able to get data from multiple newspapers, and the Lexis Nexis website is ``crawlable''.
 
 However searching for archives for more than a few days is a tedious task. In consequence I developed a web crawler which browse Lexis Nexis automatically and download the data. Though, there was a few considerations to take into account. The first one was to crawl Lexis Nexis slowly to avoid to be ban from using the service. The second one was how to crawl the website. The first problem was easily solved, I decided to crawl no more than one month of data per day. So I needed roughly two months to get 63 months of data. The technical problem was more interesting. The first thing to consider is that I needed to be able to perform a lot of things with my robot: login, search for archives of each day by filling multiple forms, clicking on various links\ldots At first sight I though I would use Perl WWW::Mechanize\footnote{\url{http://search.cpan.org/dist/WWW-Mechanize/}} or Python Mechanize\footnote{\url{http://wwwsearch.sourceforge.net/mechanize/}}. Unfortunately none of them was able to handle the Javascript stuff (and Lexis Nexis heavily rely on the ability to execute Javascript). In consequence I quickly look on the Internet to find an alternative, and I found Watir\footnote{\url{http://watir.com/}}. Watir is described by Wikipedia\footnote{\url{http://en.wikipedia.org/wiki/Watir}} like that: ``\emph{Web Application Testing in Ruby (or Watir, [\ldots]) is a toolkit used to automate browser-based tests during web application development.}''. So even if it is primary designed for testing purposes it is possible to use it to crawl a website. In fact Watir was the chosen solution because it was simple, and there was not any better alternative. Using Watir can be summed up in two steps:
 \begin{enumerate}
@@ -209,7 +209,7 @@ The GI dictionary was translated in French by Stéphane Kazmierczak, so I used i
 
 The most commons words were simply found using a little Python script. It just splitted all news in different words (in Python terms it means \lstinline!re.findall(r'\w+', text, re.UNICODE)!), and finally just use \lstinline!collections.Counter! and the \lstinline!.most_common()! method to find the most commons words.
 
-I merged the two dictionaries by hand because I wanted to add a few improvements over the Kazmierczak's one. The first thing was to only keep words that were often used in French. The second and more important improvement was to allow jokers at the end of the words. For instance instead of storing the words \emph{augmentation}, \emph{augmenter}, \emph{augmente} and so on I used a * as a joker and I just stored \emph{augment*}, so all words which have the prefix \emph{augment} are matched.
+I merged the two dictionaries by hand because I wanted to add a few improvements over the Kazmierczak's one. The first thing was to only keep words that were often used in French. The second and more important improvement was to allow jokers at the end of the words. For instance instead of storing the words \emph{augmentation}, \emph{augmenter}, \emph{augmente} and so on I used a * as a joker and I just stored \emph{augment*}, so all words which have the prefix \emph{augment} are matched. This can be seen as a very primitive form of stemming.
 
 The second dictionary was easy to build, I just translated (some of)\footnote{Only the ones that were translatable by a single word in French.} the economic words listed on InvestorWords.com\footnote{\url{http://www.investorwords.com/cgi-bin/bysubject.cgi?8}}.
 
@@ -261,11 +261,11 @@ The final step of processing the data was to merge the CSV produced by the scrip
 
 Usually the sentiment frequencies are defined as the average of the sentiment frequency of each news for a given day. I decided to do it differently because doing it this way gives \emph{less weight} to short stories.
 
-\section{Analysis of the data}
+\section{Analysing the data}
 
 The analysis of the data was done with LibreOffice Calc\footnote{\url{http://www.libreoffice.org/features/calc/}} which is a free and open source alternative to Microsoft Excel\footnote{\url{http://office.microsoft.com/en-us/excel/}}. To use it I just needed to import the  CSV file produced at the merge step. Then I was able to use the common functions like: \lstinline!AVERAGE!, \lstinline!STDEV!, \lstinline!PEARSON!, etc).
 
-Using LibreOffice Calc I performed several computations. I began by plotting the $positive\_freq(day)$, $negative\_freq(day)$, $close\_cac40(day)$ and $volume\_cac40(day)$. Then I computed their daily logarithmic return. The logarithmic return is defined as equation ~\ref{return} (Wikipedia\footnote{\url{http://en.wikipedia.org/wiki/Rate_of_return\#Logarithmic_or_continuously_compounded_return}}).
+Using LibreOffice Calc I performed several computations. I began by plotting the $positive\_freq(day)$, $negative\_freq(day)$, $close\_cac40(day)$ and $volume\_cac40(day)$. Then I computed their daily logarithmic return. The logarithmic return is defined as equation ~\ref{return}  (Wikipedia\footnote{\url{http://en.wikipedia.org/wiki/Rate_of_return\#Logarithmic_or_continuously_compounded_return}}).
 
 \begin{eqnarray}
 	return = \ln\frac{V_f}{V_i}\label{return}
@@ -529,7 +529,7 @@ On one hand the results are disappointing: the evolution over time of the CAC40 
 	\item If that was easy/simple to forecast markets it would probably be a known fact, and even if that was the case that would introduce some change in the way markets behave so it would be necessary to find another model.
 \end{itemize}
 
-\section{Improvments}
+\section{Improvements}
 To conclude I think this project can be improved and here are the main improvements that can be done in my opinion:
 \begin{enumerate}
 	\item The hypothesis stated in the equation ~\ref{hypo_cac} can be improved by considering that $\varepsilon(t)$ does not only depends on sentiments but also on other markets and political decisions for instance.
